@@ -1,13 +1,13 @@
 /* Service worker : rend l'application utilisable hors ligne. */
-const VERSION = 'a61549d4ee';
+const VERSION = 'cb26ad42b7';
 const CACHE = 'prize-money-' + VERSION;
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/icon-180.png',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
+  './icons/icon-uefa-180.png',
+  './icons/icon-uefa-192.png',
+  './icons/icon-uefa-512.png',
   // Résultats relevés sur UEFA.com : mis en cache dès l'installation pour que
   // l'application reste complète sans réseau. Rafraîchis à chaque visite en ligne.
   './data/ucl.json',

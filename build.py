@@ -26,8 +26,8 @@ HEAD = """<link rel="manifest" href="manifest.webmanifest" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Prize Money" />
 <meta name="theme-color" content="#0B1C3D" />
-<link rel="apple-touch-icon" href="icons/icon-180.png" />
-<link rel="icon" type="image/png" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-uefa-180.png" />
+<link rel="icon" type="image/png" href="icons/icon-uefa-192.png" />
 <style>
   /* Application installée : laisser passer la barre d'état et la barre d'accueil. */
   @media (display-mode: standalone){
