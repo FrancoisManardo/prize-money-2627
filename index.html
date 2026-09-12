@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Prize Money" />
+<meta name="theme-color" content="#0B1C3D" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<link rel="icon" type="image/png" href="icons/icon-192.png" />
+<style>
+  /* Application installée : laisser passer la barre d'état et la barre d'accueil. */
+  @media (display-mode: standalone){
+    .letterhead{ padding-top: calc(16px + env(safe-area-inset-top)); }
+    body{ overscroll-behavior-y: none; }
+  }
+</style>
+<title>Calculateur Prize Money UEFA 2026/27</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F2EA;
+    --paper-2:#ECE6D8;
+    --navy:#0B1C3D;
+    --navy-2:#16294D;
+    --steel:#5C6470;
+    --hairline:rgba(11,28,61,0.16);
+    --hairline-strong:rgba(11,28,61,0.32);
+    --gold:#A97E1E;
+    --gold-soft:#D9C089;
+    --ucl:#0A2A6B;
+    --uel:#C55A11;
+    --uecl:#0E6B45;
+    --red:#8C2A2A;
+    --ok:#0E6B45;
+    --shadow:0 1px 0 rgba(11,28,61,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(169,126,30,0.06), transparent),
+      var(--paper);
+    color:var(--navy);
+    font-family:'IBM Plex Sans', -apple-system, sans-serif;
+    font-size:14.5px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background: var(--gold-soft); }
+
+  a{ color:var(--navy); }
+
+  /* ---------- Letterhead ---------- */
+  .letterhead{
+    max-width:1180px;
+    margin:0 auto;
+    padding:34px 28px 20px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:24px;
+    border-bottom:2px solid var(--navy);
+  }
+  .letterhead .lh-left{ display:flex; align-items:flex-start; gap:18px; }
+  .seal{
+    width:58px;height:58px;flex:none;border-radius:50%;
+    border:1.5px solid var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    background:
+      repeating-conic-gradient(from 0deg, var(--navy) 0deg 2deg, transparent 2deg 30deg);
+  }
+  .seal::after{
+    content:"";
+    position:absolute; inset:9px;
+    border-radius:50%;
+    background:var(--paper);
+    border:1px solid var(--navy);
+  }
+  .seal span{
+    position:relative; z-index:2;
+    font-family:'Fraunces', serif; font-weight:700; font-size:11px; letter-spacing:0.02em;
+    color:var(--navy);
+  }
+  .lh-title h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    letter-spacing:-0.01em;
+    margin:0 0 2px;
+  }
+  .lh-title .ref{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--steel);
+    letter-spacing:0.02em;
+  }
+  .lh-title .sub{
+    margin-top:8px; font-size:13px; color:var(--steel); max-width:520px;
+  }
+  .lh-right{
+    text-align:right; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--steel);
+    padding-top:6px; white-space:nowrap;
+  }
+  .lh-right .tag{
+    display:inline-block; margin-top:6px; padding:3px 8px;
+    border:1px solid var(--hairline-strong); border-radius:2px;
+    color:var(--navy); font-size:10.5px; letter-spacing:0.06em;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout{ max-width:1180px; margin:0 auto; padding:22px 28px 60px; display:grid; grid-template-columns:220px 1fr; gap:26px; }
+  @media (max-width: 860px){ .layout{ grid-template-columns:1fr; } }
+
+  /* ---------- Club rail ---------- */
+  .rail{ position:sticky; top:16px; align-self:start; }
+  .rail h2{
+    font-family:'Fraunces', serif; font-size:12px; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.08em; color:var(--steel);
+    margin:0 0 10px;
+  }
+  .club-list{ display:flex; flex-direction:column; gap:4px; margin-bottom:12px; }
+  .club-item{
+    display:flex; align-items:center; justify-content:space-between; gap:6px;
+    padding:9px 10px; border:1px solid transparent; border-radius:3px;
+    cursor:pointer; font-size:13.5px;
+  }
+  .club-item:hover{ background:var(--paper-2); }
+  .club-item.active{
+    background:var(--navy); color:var(--paper); border-color:var(--navy);
+  }
+  .club-item .del{
+    opacity:0; background:none; border:none; color:inherit; cursor:pointer; font-size:13px; padding:0 2px;
+  }
+  .club-item:hover .del{ opacity:0.7; }
+  .club-item .del:hover{ opacity:1; }
+  .add-club{ display:flex; gap:6px; margin-top:10px; }
+  .add-club input{ flex:1; min-width:0; }
+
+  /* ---------- Panels ---------- */
+  .panel{
+    background:#fff; border:1px solid var(--hairline); border-radius:4px;
+    padding:20px 22px; margin-bottom:18px; box-shadow:var(--shadow);
+  }
+  .panel h3{
+    font-family:'Fraunces', serif; font-weight:600; font-size:15.5px;
+    margin:0 0 4px; display:flex; align-items:center; gap:8px;
+  }
+  .panel .num{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--gold);
+    border:1px solid var(--gold-soft); border-radius:50%; width:20px; height:20px;
+    display:inline-flex; align-items:center; justify-content:center; flex:none;
+  }
+  .panel .hint{ font-size:12px; color:var(--steel); margin:0 0 14px; }
+  .row{ display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; margin-bottom:12px; }
+  .field{ display:flex; flex-direction:column; gap:5px; min-width:150px; }
+  .field label{ font-size:11.5px; color:var(--steel); text-transform:uppercase; letter-spacing:0.04em; }
+  select, input[type=text], input[type=number], textarea{
+    font-family:'IBM Plex Sans', sans-serif; font-size:13.5px; color:var(--navy);
+    padding:8px 9px; border:1px solid var(--hairline-strong); border-radius:3px; background:#fff;
+  }
+  select:focus, input:focus, textarea:focus, button:focus{ outline:2px solid var(--gold); outline-offset:1px; }
+  input[type=number]{ width:90px; }
+  .checkline{ display:flex; align-items:center; gap:8px; font-size:13.5px; margin-bottom:12px; }
+  .checkline input{ width:15px; height:15px; }
+
+  .comp-tag{ display:inline-block; padding:2px 7px; border-radius:2px; font-size:10.5px; font-weight:600; letter-spacing:0.03em; color:#fff; }
+  .comp-tag.UCL{ background:var(--ucl); }
+  .comp-tag.UEL{ background:var(--uel); }
+  .comp-tag.UECL{ background:var(--uecl); }
+
+  .subhead{ font-size:12.5px; font-weight:600; color:var(--navy); margin:14px 0 8px; padding-top:10px; border-top:1px dashed var(--hairline); }
+
+  .matches{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+  .match-row{ display:flex; align-items:center; gap:8px; }
+  .match-row input[type=text]{ flex:1; }
+  .match-row select{ width:130px; }
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif; font-size:12.5px; font-weight:600;
+    padding:7px 12px; border-radius:3px; border:1px solid var(--navy); background:var(--navy); color:#fff;
+    cursor:pointer;
+  }
+  .btn:hover{ background:var(--navy-2); }
+  .btn.ghost{ background:#fff; color:var(--navy); }
+  .btn.ghost:hover{ background:var(--paper-2); }
+  .btn.danger{ border-color:var(--red); color:var(--red); background:#fff; }
+  .btn.danger:hover{ background:#faf0f0; }
+  .btn.small{ padding:4px 9px; font-size:11.5px; }
+  .icon-btn{
+    background:none; border:none; color:var(--red); cursor:pointer; font-size:14px; padding:2px 6px;
+  }
+
+  textarea{ width:100%; min-height:120px; font-family:'IBM Plex Mono', monospace; font-size:12px; resize:vertical; }
+  .import-actions{ display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap; }
+  .import-status{ font-size:12px; color:var(--ok); }
+  .import-status.err{ color:var(--red); }
+  .import-example{
+    margin-top:10px; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--steel);
+    background:var(--paper-2); border-radius:3px; padding:10px 12px; white-space:pre; overflow-x:auto;
+  }
+
+  /* ---------- Results ---------- */
+  .results h3{ margin-bottom:14px; }
+  table.breakdown{ width:100%; border-collapse:collapse; }
+  table.breakdown th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--steel);
+    border-bottom:1px solid var(--hairline-strong); padding:6px 4px;
+  }
+  table.breakdown th:last-child, table.breakdown td:last-child{ text-align:right; }
+  table.breakdown td{ padding:8px 4px; border-bottom:1px solid var(--hairline); font-size:13px; }
+  table.breakdown td.amount{ font-family:'IBM Plex Mono', monospace; }
+  table.breakdown tr.total td{
+    border-top:2px solid var(--navy); border-bottom:none; font-weight:700; font-size:14.5px; padding-top:12px;
+  }
+  table.breakdown tr.total td.amount{ font-family:'IBM Plex Mono', monospace; }
+  .empty-row td{ color:var(--steel); font-style:italic; padding:14px 4px; }
+
+  .vp-box{ margin-top:16px; padding:14px 16px; background:var(--paper-2); border-radius:3px; border:1px dashed var(--hairline-strong); }
+  .vp-box .vp-title{ font-weight:600; font-size:13px; margin-bottom:6px; }
+  .vp-box .vp-line{ font-size:12.5px; margin:3px 0; }
+  .vp-box .vp-total{ font-family:'IBM Plex Mono', monospace; font-weight:700; margin-top:6px; }
+  .vp-disclaimer{ font-size:11.5px; color:var(--steel); margin-top:8px; line-height:1.5; }
+
+  .empty-state{ text-align:center; padding:60px 20px; color:var(--steel); }
+  .empty-state h3{ font-family:'Fraunces', serif; color:var(--navy); font-size:18px; }
+
+  footer.disclaimer{
+    max-width:1180px; margin:0 auto; padding:0 28px 40px;
+    font-size:11.5px; color:var(--steel); line-height:1.6;
+  }
+  footer.disclaimer .line{
+    border-top:1px solid var(--hairline-strong); padding-top:14px;
+  }
+  footer.disclaimer strong{ color:var(--navy); }
+
+  .club-header{ display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .club-header h2{ font-family:'Fraunces', serif; font-size:21px; margin:0; }
+  .club-header .reset{ margin-left:auto; }
+
+
+  /* ---------- Report des résultats officiels ---------- */
+  .season-link{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    background:var(--paper); border:1px dashed var(--hairline-strong); border-radius:3px;
+    padding:10px 12px; margin:12px 0 4px; font-size:12.5px;
+  }
+  .season-link .sl-txt{ flex:1; min-width:180px; }
+  .season-link .btn{ flex:none; }
+
+  /* ---------- Onglets ---------- */
+  .main-col{ min-width:0; }
+  .tabs{ display:flex; gap:4px; margin-bottom:16px; border-bottom:1px solid var(--hairline); }
+  .tab{
+    font-family:'IBM Plex Sans', sans-serif; font-size:13px; font-weight:600; color:var(--steel);
+    background:none; border:none; border-bottom:2px solid transparent; padding:8px 12px 9px; cursor:pointer;
+    margin-bottom:-1px;
+  }
+  .tab:hover{ color:var(--navy); }
+  .tab.active{ color:var(--navy); border-bottom-color:var(--gold); }
+
+  /* ---------- Sélecteur de compétition ---------- */
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'IBM Plex Sans', sans-serif; font-size:12.5px; color:var(--navy);
+    background:#fff; border:1px solid var(--hairline-strong); border-radius:999px;
+    padding:6px 12px 6px 7px; cursor:pointer;
+  }
+  .chip:hover{ background:var(--paper-2); }
+  .chip.active{ border-color:var(--navy); box-shadow:inset 0 0 0 1px var(--navy); font-weight:600; }
+  .chip-count{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--steel); }
+
+  /* ---------- Tableaux de saison ---------- */
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 -4px; padding:0 4px; }
+  table.season{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.season th{
+    text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.05em; color:var(--steel);
+    border-bottom:1px solid var(--hairline-strong); padding:6px 7px; white-space:nowrap; font-weight:600;
+  }
+  table.season td{ padding:6px 7px; border-bottom:1px solid var(--hairline); white-space:nowrap; }
+  table.season td.team{ white-space:nowrap; max-width:190px; overflow:hidden; text-overflow:ellipsis; }
+  table.season th.nb, table.season td.nb{ text-align:right; }
+  table.season td.nb{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; }
+  table.season td.rank{ color:var(--steel); width:26px; }
+  table.season td.money{ font-size:11.5px; }
+  table.season td.proj{ color:var(--gold); }
+  table.season td.delta{ color:var(--ok); font-size:11px; }
+  table.season tr.me td{ background:rgba(169,126,30,0.11); font-weight:600; }
+  table.season tr.zone-top8 td.rank{ box-shadow:inset 3px 0 0 var(--uecl); }
+  table.season tr.zone-po td.rank{ box-shadow:inset 3px 0 0 var(--gold-soft); }
+  table.season tr.zone-out td.rank{ box-shadow:inset 3px 0 0 rgba(140,42,42,0.55); }
+  .res{
+    display:inline-block; width:15px; text-align:center; font-weight:700; font-size:10px;
+    border-radius:2px; margin-right:3px; color:#fff; background:var(--steel);
+  }
+  .res.V{ background:var(--ok); } .res.N{ background:var(--steel); } .res.D{ background:var(--red); }
+  .res.none{ background:none; color:var(--hairline-strong); }
+
+  .zone-legend{ display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; font-size:11px; color:var(--steel); }
+  .zone-legend i.z{ display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:5px; vertical-align:middle; }
+  .zone-legend i.top8{ background:var(--uecl); }
+  .zone-legend i.po{ background:var(--gold-soft); }
+  .zone-legend i.out{ background:rgba(140,42,42,0.55); }
+
+  /* ---------- Indicateurs et courbe ---------- */
+  .kpis{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-bottom:16px; }
+  .kpi{
+    background:var(--paper); border:1px solid var(--hairline); border-radius:3px; padding:9px 11px;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .kpi .k-label{ font-size:10px; text-transform:uppercase; letter-spacing:0.05em; color:var(--steel); }
+  .kpi .k-val{ font-size:16px; font-weight:600; }
+  .kpi .k-val.mono{ font-family:'IBM Plex Mono', monospace; font-size:13.5px; }
+  .kpi .k-val small{ font-size:11px; color:var(--steel); font-weight:400; }
+  .evo-chart{ width:100%; height:auto; display:block; margin-bottom:14px; }
+
+  .md-log{ display:flex; flex-direction:column; gap:2px; margin-bottom:14px; }
+  .md-line{
+    display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--hairline); font-size:12.5px;
+  }
+  .md-line .md-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--steel);
+    border:1px solid var(--hairline-strong); border-radius:2px; padding:1px 5px; flex:none;
+  }
+  .md-line .md-txt{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .md-line .md-amt{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--ok); flex:none; }
+  .md-line .md-cum{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; font-weight:600; flex:none; min-width:110px; text-align:right; }
+
+  .md-chips{ display:flex; flex-wrap:wrap; gap:7px; }
+  .md-chip{
+    display:inline-flex; align-items:center; gap:5px; font-size:11.5px;
+    border:1px solid var(--hairline-strong); border-radius:3px; padding:3px 4px 3px 6px;
+  }
+
+  /* ---------- Champs larges ---------- */
+  .field.wide{ min-width:260px; }
+  .field.wide-sm{ min-width:220px; }
+
+  /* ---------- Letterhead : actions ---------- */
+  .lh-actions{ display:flex; gap:8px; align-items:center; justify-content:flex-end; margin-top:6px; flex-wrap:wrap; }
+  .lh-right .tag{ margin-top:0; }
+
+  /* ---------- Import repliable ---------- */
+  .import-details summary{
+    list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:15.5px;
+  }
+  .import-details summary::-webkit-details-marker{ display:none; }
+  .import-details summary::after{ content:'\25BE'; margin-left:auto; font-size:12px; color:var(--steel); }
+  .import-details[open] summary::after{ content:'\25B4'; }
+  .import-details summary .summary-hint{
+    font-family:'IBM Plex Sans', sans-serif; font-size:11.5px; font-weight:400; color:var(--steel);
+  }
+  .import-details[open] summary{ margin-bottom:12px; }
+
+  /* ---------- Ecrans tactiles (pas de :hover) ---------- */
+  @media (hover: none){
+    .club-item .del{ opacity:0.55; }
+  }
+
+  /* ---------- Vue compacte ---------- */
+  body.compact{ font-size:13.5px; }
+  body.compact .letterhead{ padding:16px 20px 12px; }
+  body.compact .lh-title h1{ font-size:20px; }
+  body.compact .lh-title .sub{ display:none; }
+  body.compact .seal{ width:44px; height:44px; }
+  body.compact .layout{ padding:14px 20px 40px; gap:16px; }
+  body.compact .panel{ padding:13px 15px; margin-bottom:11px; }
+  body.compact .panel h3, body.compact .import-details summary{ font-size:14px; }
+  body.compact .panel .hint{ font-size:11.5px; margin-bottom:9px; }
+  body.compact .import-example{ display:none; }
+  body.compact .row{ gap:10px; margin-bottom:9px; }
+  body.compact .subhead{ margin:10px 0 6px; padding-top:8px; }
+  body.compact table.breakdown td{ padding:5px 4px; font-size:12.5px; }
+  body.compact table.breakdown tr.total td{ padding-top:9px; font-size:13.5px; }
+  body.compact .vp-box{ margin-top:12px; padding:11px 13px; }
+  body.compact textarea{ min-height:88px; }
+  body.compact .club-header{ margin-bottom:12px; }
+  body.compact .club-header h2{ font-size:18px; }
+
+  /* ---------- Barre de total (mobile uniquement) ---------- */
+  .mobile-total{ display:none; }
+
+  /* ---------- iPhone / petits ecrans ---------- */
+  @media (max-width: 700px){
+    body{ font-size:15px; -webkit-text-size-adjust:100%; }
+
+    .letterhead{
+      flex-direction:column; align-items:stretch; gap:10px;
+      padding:16px max(14px, env(safe-area-inset-right)) 12px max(14px, env(safe-area-inset-left));
+    }
+    body.compact .letterhead{
+      padding:13px max(14px, env(safe-area-inset-right)) 9px max(14px, env(safe-area-inset-left));
+      gap:7px;
+    }
+    body.compact .lh-right{ font-size:10.5px; }
+    body.compact .lh-right br{ display:none; }
+    body.compact .lh-right strong{ margin-left:6px; }
+    body.compact .lh-actions{ margin-top:5px; }
+    .lh-left{ gap:12px; }
+    .seal{ width:42px; height:42px; }
+    .seal span{ font-size:9px; }
+    .lh-title h1{ font-size:19px; }
+    .lh-title .ref{ font-size:10.5px; line-height:1.4; }
+    .lh-title .sub{ font-size:12px; margin-top:6px; }
+    .lh-right{ text-align:left; white-space:normal; padding-top:0; }
+    .lh-actions{ justify-content:flex-start; }
+
+    .layout{
+      padding:14px max(14px, env(safe-area-inset-right)) 30px max(14px, env(safe-area-inset-left));
+      gap:14px;
+    }
+    body.compact .layout{ padding:12px max(14px, env(safe-area-inset-right)) 24px max(14px, env(safe-area-inset-left)); gap:12px; }
+
+    .rail{ position:static; }
+    .rail h2{ margin-bottom:8px; }
+    .club-list{
+      flex-direction:row; overflow-x:auto; gap:7px; margin-bottom:8px; padding-bottom:4px;
+      -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    }
+    .club-list::-webkit-scrollbar{ display:none; }
+    .club-item{
+      flex:0 0 auto; border:1px solid var(--hairline-strong); border-radius:999px;
+      padding:8px 13px; font-size:14px;
+    }
+    .club-item .del{
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:30px; min-height:30px; margin:-6px -8px -6px 0; font-size:15px; opacity:0.6;
+    }
+    .add-club{ margin-top:0; gap:8px; }
+
+    .panel{ padding:14px; margin-bottom:12px; border-radius:6px; }
+    body.compact .panel{ padding:12px; margin-bottom:10px; }
+    .panel h3, .import-details summary{ font-size:15px; }
+
+    .row{ flex-direction:column; align-items:stretch; gap:11px; }
+    .field, .field.wide, .field.wide-sm{ min-width:0; width:100%; }
+    select, input[type=text], input[type=number], textarea{ width:100%; font-size:16px; padding:10px 11px; }
+    input[type=number]{ width:100%; }
+    .checkline{ align-items:flex-start; font-size:14px; }
+    .checkline input{ width:20px; height:20px; margin-top:1px; flex:none; }
+    .btn{ font-size:14px; padding:10px 14px; }
+    .btn.small{ font-size:13px; padding:8px 12px; }
+    .icon-btn{ font-size:18px; padding:6px 10px; }
+
+    .match-row{
+      flex-wrap:wrap; gap:7px; padding:8px; background:var(--paper);
+      border:1px solid var(--hairline); border-radius:4px;
+    }
+    .match-row input[type=text]{ flex:1 1 100%; }
+    .match-row select{ flex:1 1 auto; width:auto; }
+
+    .club-header{ flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+    .club-header h2{ font-size:19px; }
+    .club-header .reset{ font-size:12.5px; padding:6px 10px; }
+
+    table.breakdown thead{ display:none; }
+    table.breakdown, table.breakdown tbody{ display:block; width:100%; }
+    table.breakdown tr{
+      display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+      padding:8px 0; border-bottom:1px solid var(--hairline);
+    }
+    table.breakdown td{ display:block; border:none; padding:0; font-size:13.5px; line-height:1.45; }
+    table.breakdown td:first-child{
+      flex:1 1 auto; min-width:0; display:flex; gap:6px; align-items:flex-start;
+    }
+    table.breakdown .comp-tag{ flex:0 0 auto; margin-top:2px; }
+    table.breakdown td.amount, table.breakdown td:last-child{
+      flex:0 0 auto; text-align:right; white-space:nowrap; font-weight:600;
+    }
+    table.breakdown tr.total{ border-top:2px solid var(--navy); border-bottom:none; padding-top:10px; }
+    table.breakdown tr.total td{ border-top:none; padding-top:0; font-size:14.5px; }
+    .empty-row td{ padding:10px 0; }
+
+    .vp-box .vp-line{ font-size:13px; }
+
+    footer.disclaimer{
+      padding:0 max(14px, env(safe-area-inset-right)) calc(74px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+    }
+
+    .mobile-total:not([hidden]){
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      position:fixed; left:0; right:0; bottom:0; z-index:40;
+      padding:11px max(14px, env(safe-area-inset-right)) calc(11px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+      background:var(--navy); color:var(--paper);
+      box-shadow:0 -2px 10px rgba(11,28,61,0.18);
+    }
+    .tabs{ margin-bottom:12px; gap:2px; }
+    .tab{ flex:1; font-size:13px; padding:9px 6px 10px; }
+    .chips{ gap:6px; }
+    .chip{ font-size:12px; padding:7px 11px 7px 6px; }
+    table.season{ font-size:12px; }
+    table.season td.team{ max-width:150px; }
+    table.season th, table.season td{ padding:6px 6px; }
+    .kpis{ grid-template-columns:1fr 1fr; gap:8px; }
+    .kpi .k-val{ font-size:15px; }
+    .kpi .k-val.mono{ font-size:12.5px; }
+    .md-line{ flex-wrap:wrap; gap:6px; }
+    .md-line .md-txt{ flex:1 1 100%; order:3; font-size:12px; color:var(--steel); }
+    .md-line .md-cum{ min-width:0; margin-left:auto; }
+    .zone-legend{ gap:8px; font-size:10.5px; flex-direction:column; }
+
+    .mobile-total .mt-label{ font-size:11px; text-transform:uppercase; letter-spacing:0.06em; opacity:0.78; }
+    .mobile-total .mt-amount{ font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:15px; white-space:nowrap; }
+  }
+
+  @media (max-width: 380px){
+    .lh-title h1{ font-size:17px; }
+    .mobile-total .mt-amount{ font-size:13.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="letterhead">
+  <div class="lh-left">
+    <div class="seal"><span>UEFA</span></div>
+    <div class="lh-title">
+      <h1>Calculateur de Prize Money</h1>
+      <div class="ref">Circular Letter n°48/2026 — 13 juillet 2026 — Cycle 2024-27</div>
+      <div class="sub">Estimation du prize money d'un club en UEFA Champions League, Europa League ou Europa Conference League, saison 2026/27, et suivi de l'évolution des gains journée après journée.</div>
+    </div>
+  </div>
+  <div class="lh-right">
+    Seuil de revenu brut de référence<br/>
+    <strong style="color:var(--navy); font-size:13px;">4,4 Md€</strong>
+    <div class="lh-actions">
+      <span class="tag">MONTANTS PROVISOIRES</span>
+      <button class="btn ghost small" type="button" id="compact-toggle" aria-pressed="false" onclick="toggleCompact()">Vue compacte</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="rail">
+    <h2>Clubs suivis</h2>
+    <div class="club-list" id="club-list"></div>
+    <div class="add-club">
+      <input type="text" id="new-club-name" placeholder="Nom du club" onkeydown="if(event.key==='Enter')addClub()"/>
+      <button class="btn small" onclick="addClub()">+ Ajouter</button>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <div class="tabs" id="tabs"></div>
+    <main id="main-content"></main>
+  </div>
+</div>
+
+<div class="mobile-total" id="mobile-total" hidden>
+  <span class="mt-label">Total hors Value Pillar</span>
+  <span class="mt-amount" id="mobile-total-amount">—</span>
+</div>
+
+<footer class="disclaimer">
+  <div class="line">
+    <strong>Montants provisoires</strong>, base de revenu brut 4,4 Md€, sujets à confirmation finale par l'UEFA.
+    Hors périmètre : paiements de solidarité aux clubs non participants (Circular Letter n°72/2025) et distribution UEFA Women's Champions League / Youth League.
+    Aucune connexion automatique à UEFA.com : les résultats de phase de ligue sont embarqués manuellement d'après UEFA.com,
+    à jour de la <strong>journée 1 de Ligue des champions, 8-10 septembre 2026</strong>. Journée 1 d'Europa League le 16-17 septembre 2026,
+    de Conference League le 15 octobre 2026 : à saisir dans l'onglet « Saison &amp; évolution » dès qu'elles sont jouées.
+    Calcul 100% local, aucune donnée transmise à un serveur.
+  </div>
+</footer>
+
+<script>
+/* ============================= DATA ============================= */
+
+const ROUND_ORDER = ['Q1','Q2','Q3','PO'];
+// Libellés des tours de qualification. Les clés (Q1/Q2/Q3/PO) restent inchangées :
+// elles seules servent au calcul et au stockage.
+const ROUND_LABEL = {
+  Q1:'1er tour de qualification (Q1)',
+  Q2:'2e tour de qualification (Q2)',
+  Q3:'3e tour de qualification (Q3)',
+  PO:'Barrages / play-offs (PO)'
+};
+// Version longue, utilisée dans le détail des paiements pour lever toute ambiguïté
+// avec les barrages de phase finale (knockout phase play-offs).
+const ROUND_LABEL_FULL = {
+  Q1:'1er tour de qualification (Q1)',
+  Q2:'2e tour de qualification (Q2)',
+  Q3:'3e tour de qualification (Q3)',
+  PO:"Barrages / play-offs d'accès à la phase de ligue (PO)"
+};
+const ELIM_BONUS = {Q1:150000, Q2:350000, Q3:550000, PO:750000};
+const ROUND_FEE = 175000;
+const CHAMPION_BONUS = 260000;
+
+const LEAGUE_CONFIG = {
+  UCL: { startingDown:17870000, startingBalance:750000, winBonus:2100000, drawBonus:700000,
+         valuePerPart:275000, top8:2000000, top9_16:1000000,
+         ko:{ barrages:1000000, r16:11000000, qf:12500000, sf:15000000, final:18500000, winner:6500000 } },
+  UEL: { startingDown:4140000, startingBalance:170000, winBonus:450000, drawBonus:150000,
+         valuePerPart:75000, top8:600000, top9_16:300000,
+         ko:{ barrages:300000, r16:1750000, qf:2500000, sf:4200000, final:7000000, winner:6000000 } },
+  UECL:{ startingDown:3050000, startingBalance:120000, winBonus:400000, drawBonus:133000,
+         valuePerPart:28000, top8:400000, top9_16:200000,
+         ko:{ barrages:200000, r16:800000, qf:1300000, sf:2500000, final:4000000, winner:3000000 } },
+};
+
+const KO_STAGE_LABEL = {
+  barrages:"Barrages / play-offs de phase finale (accès aux 8es)",
+  r16:'8es de finale', qf:'Quarts de finale', sf:'Demi-finales', final:'Finale'
+};
+const KO_STAGE_OPTIONS = [
+  ['aucun','Non atteinte / éliminé en phase de ligue'],
+  ['barrages','Barrages / play-offs de phase finale (rangs 9-24)'],
+  ['8es','8es de finale'],
+  ['quarts','Quarts de finale'],
+  ['demies','Demi-finale'],
+  ['finale','Finaliste'],
+  ['vainqueur','Vainqueur'],
+];
+const KO_STAGE_TO_KEY = { barrages:'barrages', '8es':'r16', quarts:'qf', demies:'sf', finale:'final', vainqueur:'final' };
+
+// Value Pillar : même mécanisme à 666 parts que le ranking bonus (37-rang),
+// avec une valeur/part propre à chaque compétition (cf. Circular Letter 48/2026, p.3-5).
+const VP_VALUE_PER_PART = {
+  UCL:  { european: 935000, nonEuropean: 346000 },
+  UEL:  { european: 217000, nonEuropean: 80000 },
+  UECL: { european: 63000,  nonEuropean: 23000 },
+};
+
+/* ============================= STATE ============================= */
+
+let DB = { clubs: {}, selected: null, season: {}, view: 'clubs', seasonComp: 'UCL' };
+const STORAGE_KEY = 'uefa_pm_2026_27_clubs_v1';
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
+
+// Le compte rendu d'un import survit au re-rendu qui suit immédiatement.
+let IMPORT_STATUS = null;
+
+function setStatus(id, text, isError){
+  IMPORT_STATUS = { id, text, err: !!isError };
+  paintStatus();
+}
+
+function clearStatus(){ IMPORT_STATUS = null; }
+
+function paintStatus(){
+  if(!IMPORT_STATUS) return;
+  const el = document.getElementById(IMPORT_STATUS.id);
+  if(el){
+    el.className = 'import-status' + (IMPORT_STATUS.err ? ' err' : '');
+    el.textContent = IMPORT_STATUS.text;
+  }
+}
+
+function newClub(name){
+  return {
+    id: uid(),
+    name,
+    qualif: { active:false, entryRound:'Q1', competition:'UCL', outcome:'qualified', eliminationRound:'Q2' },
+    championBonus: false,
+    league: { competition:'', ranking:'', matches:[] },
+    knockout: { stage:'aucun' },
+    superCoupe: 'aucun',
+    valuePillar: { rankEuropean:'', rankNonEuropean:'' }
+  };
+}
+
+// Lecture / écriture : window.storage si disponible, sinon localStorage
+// (indispensable pour ouvrir le fichier directement dans Safari iOS).
+async function storageGet(key){
+  try{
+    if(window.storage && window.storage.get){
+      const res = await window.storage.get(key, false);
+      if(res && res.value) return res.value;
+    }
+  }catch(e){ /* on retombe sur localStorage */ }
+  try{ return localStorage.getItem(key); }catch(e){ return null; }
+}
+
+async function storageSet(key, value){
+  let ok = false;
+  try{
+    if(window.storage && window.storage.set){ await window.storage.set(key, value, false); ok = true; }
+  }catch(e){ /* on retombe sur localStorage */ }
+  try{ localStorage.setItem(key, value); ok = true; }catch(e){}
+  return ok;
+}
+
+async function loadAll(){
+  try{
+    const raw = await storageGet(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      DB.clubs = parsed.clubs || {};
+      DB.selected = parsed.selected || null;
+      DB.season = parsed.season || {};
+      DB.view = parsed.view === 'season' ? 'season' : 'clubs';
+      DB.seasonComp = LEAGUE_CONFIG[parsed.seasonComp] ? parsed.seasonComp : 'UCL';
+    }
+  }catch(e){ /* no data yet */ }
+  mergeSeasonDefaults();
+  if(!DB.selected || !DB.clubs[DB.selected]){
+    const keys = Object.keys(DB.clubs);
+    DB.selected = keys.length ? keys[0] : null;
+  }
+}
+
+async function saveAll(){
+  try{
+    await storageSet(STORAGE_KEY, JSON.stringify({
+      clubs:DB.clubs, selected:DB.selected, season:DB.season, view:DB.view, seasonComp:DB.seasonComp
+    }));
+  }catch(e){ console.error('Erreur de sauvegarde', e); }
+}
+
+/* ---------- Vue compacte (préférence d'affichage, locale) ---------- */
+
+const UI_KEY = 'uefa_pm_ui_v1';
+
+function applyCompact(on, persist){
+  document.body.classList.toggle('compact', !!on);
+  const btn = document.getElementById('compact-toggle');
+  if(btn){
+    btn.textContent = on ? 'Vue détaillée' : 'Vue compacte';
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  if(persist){
+    try{ localStorage.setItem(UI_KEY, on ? '1' : '0'); }catch(e){}
+  }
+}
+
+function toggleCompact(){
+  applyCompact(!document.body.classList.contains('compact'), true);
+}
+
+function initCompact(){
+  let pref = null;
+  try{ pref = localStorage.getItem(UI_KEY); }catch(e){}
+  // Par défaut : compact sur petit écran, détaillé sur grand écran.
+  const auto = window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
+  applyCompact(pref === null ? auto : pref === '1', false);
+}
+
+function setMobileTotal(amount){
+  const bar = document.getElementById('mobile-total');
+  const val = document.getElementById('mobile-total-amount');
+  if(!bar || !val) return;
+  if(amount === null || amount === undefined){ bar.hidden = true; return; }
+  val.textContent = formatEUR(amount);
+  bar.hidden = false;
+}
+
+/* ============================= HELPERS ============================= */
+
+function escapeHtml(s){
+  return (s===undefined||s===null?'':String(s)).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+const EUR = new Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR', minimumFractionDigits:2, maximumFractionDigits:2 });
+function formatEUR(n){ return EUR.format(Math.round((n + Number.EPSILON) * 100) / 100); }
+
+function currentClub(){ return DB.selected ? DB.clubs[DB.selected] : null; }
+
+/* ============================= CALCULATION ============================= */
+
+function calcClub(club){
+  const lines = [];
+  let total = 0;
+  const add = (label, amount, tag) => {
+    if(amount){ lines.push({label, amount, tag}); total += amount; }
+  };
+
+  // --- Qualifications ---
+  if(club.qualif.active){
+    const entryIdx = ROUND_ORDER.indexOf(club.qualif.entryRound);
+    const comp = club.qualif.competition;
+    if(club.qualif.outcome === 'eliminated'){
+      const elimIdx = ROUND_ORDER.indexOf(club.qualif.eliminationRound);
+      const played = elimIdx >= entryIdx ? ROUND_ORDER.slice(entryIdx, elimIdx+1) : [club.qualif.eliminationRound];
+      played.forEach((r,i)=>{
+        const isLast = i === played.length-1;
+        let fee = ROUND_FEE;
+        if(isLast && comp === 'UCL' && r === 'Q3') fee = 0; // pas de forfait pour Q3-UCL perdu
+        if(fee>0) add(`Indemnité de tour — ${ROUND_LABEL_FULL[r]} — ${comp} (${isLast?'défaite':'victoire'})`, fee, comp);
+      });
+      add(`Prime d'élimination en qualifications — ${ROUND_LABEL_FULL[club.qualif.eliminationRound]}`, ELIM_BONUS[club.qualif.eliminationRound], 'UECL');
+    } else {
+      const played = ROUND_ORDER.slice(entryIdx);
+      played.forEach(r=>{
+        let fee = ROUND_FEE;
+        if(r === 'PO' && comp === 'UCL') fee = 0; // vainqueur des barrages UCL
+        if(r === 'PO' && comp === 'UEL') fee = 0; // play-offs UEL gagnés
+        if(fee>0) add(`Indemnité de tour — ${ROUND_LABEL_FULL[r]} — ${comp} (victoire)`, fee, comp);
+      });
+    }
+  }
+
+  if(club.championBonus){
+    add('Bonus champion national — phase de ligue non atteinte', CHAMPION_BONUS, null);
+  }
+
+  // --- Phase de ligue ---
+  let rankBracket = null; // for KO eligibility
+  if(club.league.competition){
+    const comp = club.league.competition;
+    const cfg = LEAGUE_CONFIG[comp];
+    add(`Starting fee ${comp} (down-payment + solde)`, cfg.startingDown + cfg.startingBalance, comp);
+
+    let w=0, d=0;
+    (club.league.matches||[]).forEach(m=>{ if(m.result==='V') w++; else if(m.result==='N') d++; });
+    if(w) add(`Bonus victoires — phase de ligue ${comp} (${w})`, w*cfg.winBonus, comp);
+    if(d) add(`Bonus nuls — phase de ligue ${comp} (${d})`, d*cfg.drawBonus, comp);
+
+    const rank = parseInt(club.league.ranking, 10);
+    if(rank >= 1 && rank <= 36){
+      const parts = 37 - rank;
+      add(`Ranking bonus — rang ${rank} (${parts}/666 parts × ${formatEUR(cfg.valuePerPart)})`, parts*cfg.valuePerPart, comp);
+      if(rank <= 8){ add(`Bonus classement — top 8`, cfg.top8, comp); rankBracket='top8'; }
+      else if(rank <= 16){ add(`Bonus classement — top 9-16`, cfg.top9_16, comp); rankBracket='top16'; }
+
+      let stages = [];
+      if(rank <= 8) stages = ['r16','qf','sf','final'];
+      else if(rank <= 24) stages = ['barrages','r16','qf','sf','final'];
+
+      const stageSel = club.knockout.stage;
+      if(stageSel !== 'aucun' && stages.length){
+        const targetKey = KO_STAGE_TO_KEY[stageSel];
+        const idx = stages.indexOf(targetKey);
+        if(idx >= 0){
+          stages.slice(0, idx+1).forEach(s=>{
+            add(`Phase à élimination directe — ${KO_STAGE_LABEL[s]}`, cfg.ko[s], comp);
+          });
+          if(stageSel === 'vainqueur'){
+            add(`Bonus vainqueur ${comp}`, cfg.ko.winner, comp);
+          }
+        }
+      }
+    }
+
+    if(comp === 'UCL' && club.superCoupe !== 'aucun'){
+      add(`Supercoupe d'Europe — finaliste`, 4000000, 'UCL');
+      if(club.superCoupe === 'vainqueur'){
+        add(`Supercoupe d'Europe — bonus vainqueur`, 1000000, 'UCL');
+      }
+    }
+  }
+
+  return { lines, total };
+}
+
+function calcValuePillar(club){
+  const lines = [];
+  let total = 0;
+  const comp = club.league.competition;
+  if(!comp){
+    return { lines, total, noComp:true };
+  }
+  const cfg = VP_VALUE_PER_PART[comp];
+  const validRank = (r) => { const n = parseInt(r,10); return (n>=1 && n<=36) ? n : null; };
+
+  const rE = validRank(club.valuePillar.rankEuropean);
+  if(rE !== null){
+    const parts = 37 - rE;
+    const v = parts * cfg.european;
+    lines.push(`Partie européenne — rang ${rE} (${parts}/666 parts × ${formatEUR(cfg.european)}) — ${formatEUR(v)}`);
+    total += v;
+  }
+  const rN = validRank(club.valuePillar.rankNonEuropean);
+  if(rN !== null){
+    const parts = 37 - rN;
+    const v = parts * cfg.nonEuropean;
+    lines.push(`Partie non-européenne — rang ${rN} (${parts}/666 parts × ${formatEUR(cfg.nonEuropean)}) — ${formatEUR(v)}`);
+    total += v;
+  }
+  return { lines, total, noComp:false };
+}
+
+/* ============================= ACTIONS ============================= */
+
+function addClub(){
+  const input = document.getElementById('new-club-name');
+  const name = input.value.trim();
+  if(!name) return;
+  const c = newClub(name);
+  DB.clubs[c.id] = c;
+  DB.selected = c.id;
+  input.value = '';
+  saveAll(); render();
+}
+
+function selectClub(id){ DB.selected = id; clearStatus(); saveAll(); render(); }
+
+function deleteClub(id, ev){
+  if(ev) ev.stopPropagation();
+  const club = DB.clubs[id];
+  if(!club) return;
+  if(!confirm(`Supprimer le club « ${club.name} » et tout son historique ?`)) return;
+  delete DB.clubs[id];
+  if(DB.selected === id){
+    const keys = Object.keys(DB.clubs);
+    DB.selected = keys.length ? keys[0] : null;
+  }
+  saveAll(); render();
+}
+
+function resetClub(){
+  const club = currentClub();
+  if(!club) return;
+  if(!confirm(`Réinitialiser toutes les données de « ${club.name} » ?`)) return;
+  const fresh = newClub(club.name);
+  fresh.id = club.id;
+  DB.clubs[club.id] = fresh;
+  saveAll(); render();
+}
+
+function updateField(path, value){
+  const club = currentClub();
+  if(!club) return;
+  const parts = path.split('.');
+  let obj = club;
+  for(let i=0;i<parts.length-1;i++) obj = obj[parts[i]];
+  obj[parts[parts.length-1]] = value;
+  saveAll(); render();
+}
+
+function toggleField(path){
+  const club = currentClub();
+  if(!club) return;
+  const parts = path.split('.');
+  let obj = club;
+  for(let i=0;i<parts.length-1;i++) obj = obj[parts[i]];
+  obj[parts[parts.length-1]] = !obj[parts[parts.length-1]];
+  saveAll(); render();
+}
+
+function addMatch(){
+  const club = currentClub();
+  if(!club) return;
+  club.league.matches.push({ id: uid(), label: '', result:'V' });
+  saveAll(); render();
+}
+
+function updateMatch(id, field, value){
+  const club = currentClub();
+  if(!club) return;
+  const m = club.league.matches.find(x=>x.id===id);
+  if(m){ m[field] = value; saveAll(); }
+}
+
+function removeMatch(id){
+  const club = currentClub();
+  if(!club) return;
+  club.league.matches = club.league.matches.filter(x=>x.id!==id);
+  saveAll(); render();
+}
+
+/* ---------- Bulk import ---------- */
+
+function normResult(raw){
+  if(!raw) return null;
+  const r = raw.toString().trim().toUpperCase();
+  if(['V','W','WIN','VICTOIRE'].includes(r)) return 'V';
+  if(['N','NUL','DRAW'].includes(r)) return 'N';
+  if(['D','L','LOSS','DEFAITE','DÉFAITE'].includes(r)) return 'D';
+  return null;
+}
+
+function normRound(raw){
+  if(!raw) return null;
+  const r = raw.toString().trim().toUpperCase().replace(/\s+/g,'');
+  if(['Q1'].includes(r)) return 'Q1';
+  if(['Q2'].includes(r)) return 'Q2';
+  if(['Q3'].includes(r)) return 'Q3';
+  if(['PO','PLAYOFFS','PLAYOFF','PLAY-OFF','PLAY-OFFS','BARRAGE','BARRAGES'].includes(r)) return 'PO';
+  return null;
+}
+
+function normComp(raw){
+  if(!raw) return null;
+  const r = raw.toString().trim().toUpperCase();
+  if(['UCL','LDC','CHAMPIONSLEAGUE'].includes(r)) return 'UCL';
+  if(['UEL','EUROPALEAGUE'].includes(r)) return 'UEL';
+  if(['UECL','CONFERENCE','CONFERENCELEAGUE'].includes(r)) return 'UECL';
+  return null;
+}
+
+function normType(row){
+  const t = (row.type||'').toString().trim().toLowerCase();
+  if(t.startsWith('qual')) return 'qualif';
+  if(t.startsWith('lig') || t.startsWith('league')) return 'league';
+  const det = row.detail || row.round || row.tour || row.journee || row['journée'] || row.matchday || '';
+  if(normRound(det)) return 'qualif';
+  return 'league';
+}
+
+function parseCSV(text){
+  const lines = text.trim().split(/\r?\n/).filter(l=>l.trim().length);
+  if(!lines.length) return [];
+  const headers = lines[0].split(',').map(h=>h.trim().toLowerCase());
+  return lines.slice(1).map(line=>{
+    const cols = line.split(',').map(c=>c.trim());
+    const obj = {};
+    headers.forEach((h,i)=>{ obj[h] = cols[i] !== undefined ? cols[i] : ''; });
+    return obj;
+  });
+}
+
+function parseImportText(text){
+  const trimmed = text.trim();
+  if(!trimmed) return [];
+  try{
+    const parsed = JSON.parse(trimmed);
+    if(Array.isArray(parsed)) return parsed;
+    if(parsed && Array.isArray(parsed.rows)) return parsed.rows;
+  }catch(e){ /* not JSON, try CSV */ }
+  return parseCSV(trimmed);
+}
+
+function runImport(){
+  const ta = document.getElementById('import-text');
+  let rows;
+  try{
+    rows = parseImportText(ta.value);
+  }catch(e){
+    setStatus('import-status', 'Erreur de lecture : ' + e.message, true);
+    return;
+  }
+  if(!rows.length){
+    setStatus('import-status', 'Aucune ligne exploitable trouvée.', true);
+    return;
+  }
+
+  let touched = new Set();
+  let skipped = 0;
+
+  rows.forEach(row=>{
+    const clubName = (row.club || row.Club || '').toString().trim();
+    if(!clubName){ skipped++; return; }
+
+    let club = Object.values(DB.clubs).find(c => c.name.toLowerCase() === clubName.toLowerCase());
+    if(!club){
+      club = newClub(clubName);
+      DB.clubs[club.id] = club;
+    }
+    touched.add(club.id);
+
+    const type = normType(row);
+    const comp = normComp(row.competition || row.comp || row['compétition']);
+    const result = normResult(row.result || row['résultat'] || row.resultat);
+
+    if(type === 'qualif'){
+      const round = normRound(row.detail || row.round || row.tour || row.journee || row['journée']);
+      if(!round || !result || result==='N'){ skipped++; return; }
+      if(!club.qualif.active){
+        club.qualif.active = true;
+        club.qualif.entryRound = round;
+        club.qualif.competition = comp || club.qualif.competition;
+      }
+      if(comp) club.qualif.competition = comp;
+      if(result === 'V'){
+        club.qualif.outcome = 'qualified';
+      } else {
+        club.qualif.outcome = 'eliminated';
+        club.qualif.eliminationRound = round;
+      }
+    } else {
+      if(!result){ skipped++; return; }
+      const label = (row.detail || row.round || row.journee || row['journée'] || row.matchday || '').toString();
+      if(comp) club.league.competition = comp;
+      club.league.matches.push({ id: uid(), label, result });
+    }
+  });
+
+  if(touched.size && !DB.selected) DB.selected = [...touched][0];
+  saveAll();
+  setStatus('import-status', `Import terminé : ${touched.size} club(s) mis à jour, ${rows.length - skipped} ligne(s) appliquée(s)${skipped?`, ${skipped} ignorée(s)`:''}.`);
+  render();
+}
+
+
+/* ============================= SAISON : RÉSULTATS PAR JOURNÉE ============================= */
+
+const MD_COUNT = 8;
+const COMP_NAME = { UCL:'Ligue des champions', UEL:'Europa League', UECL:'Conference League' };
+
+// Dates officielles des journées de phase de ligue (UEFA.com).
+const MD_DATES = {
+  UCL: { 1:'8-10 septembre 2026', 2:'13-14 octobre 2026', 3:'20-21 octobre 2026', 4:'3-4 novembre 2026',
+         5:'24-25 novembre 2026', 6:'8-9 décembre 2026', 7:'19-20 janvier 2027', 8:'27 janvier 2027' },
+  UEL:  { 1:'16-17 septembre 2026' },
+  UECL: { 1:'15 octobre 2026' },
+};
+
+// Résultats officiels embarqués — format [domicile, buts domicile, buts extérieur, extérieur].
+// Source : UEFA.com. Dernière mise à jour : Ligue des champions, journée 1 (8-10 septembre 2026).
+const SEASON_RESULTS = {
+  UCL: {
+    1: [
+      ['AEK Athènes', 1, 0, 'LASK'],
+      ['Club Bruges', 2, 3, 'Aston Villa'],
+      ['Borussia Dortmund', 3, 2, 'Villarreal'],
+      ['Porto', 0, 2, 'Manchester City'],
+      ['Lille', 2, 3, 'Real Betis'],
+      ['Real Madrid', 2, 1, 'Inter'],
+      ['FC Barcelone', 5, 1, 'Feyenoord'],
+      ['Stuttgart', 3, 1, 'Viking'],
+      ['Liverpool', 2, 1, 'Atlético de Madrid'],
+      ['Paris Saint-Germain', 6, 1, 'Slovan Bratislava'],
+      ['Sporting CP', 3, 1, 'Galatasaray'],
+      ['Napoli', 0, 1, 'Arsenal'],
+      ['Fenerbahçe', 1, 1, 'Roma'],
+      ['PSV Eindhoven', 1, 1, 'Shakhtar Donetsk'],
+      ['Como', 4, 1, 'Leipzig'],
+      ['Bayern Munich', 5, 0, 'Bodø/Glimt'],
+      ['Manchester United', 4, 0, 'Sabah'],
+      ['Slavia Prague', 2, 3, 'Lens'],
+    ],
+  },
+  UEL: {},
+  UECL: {},
+};
+
+// Raccourcis courants qui ne se déduisent pas d'une simple comparaison de chaînes.
+const NAME_ALIASES = {
+  psg:'Paris Saint-Germain', paris:'Paris Saint-Germain', parissg:'Paris Saint-Germain',
+  mancity:'Manchester City', mcfc:'Manchester City',
+  manu:'Manchester United', manutd:'Manchester United', mufc:'Manchester United',
+  atleti:'Atlético de Madrid', atm:'Atlético de Madrid',
+  barca:'FC Barcelone', barcelone:'FC Barcelone', barcelona:'FC Barcelone',
+  bayernmunchen:'Bayern Munich', bayernmunich:'Bayern Munich',
+  rbleipzig:'Leipzig', rasenballsportleipzig:'Leipzig',
+  naples:'Napoli', asroma:'Roma', slaviapraha:'Slavia Prague',
+  bruges:'Club Bruges', clubbrugge:'Club Bruges',
+  psv:'PSV Eindhoven', betis:'Real Betis', sporting:'Sporting CP',
+  shakhtar:'Shakhtar Donetsk', bodo:'Bodø/Glimt', bodoglimt:'Bodø/Glimt',
+};
+
+function normName(s){
+  return (s === undefined || s === null ? '' : String(s))
+    .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]/g,'');
+}
+
+// Toutes les équipes présentes dans les résultats d'une compétition.
+function seasonTeams(comp){
+  const set = new Set();
+  const src = (DB.season && DB.season[comp]) || {};
+  Object.keys(src).forEach(md => (src[md]||[]).forEach(m => { set.add(m[0]); set.add(m[3]); }));
+  return [...set];
+}
+
+// Rattache un nom saisi librement à une équipe des résultats officiels.
+function resolveTeamName(name, comp){
+  const n = normName(name);
+  if(!n) return null;
+  const comps = comp ? [comp] : ['UCL','UEL','UECL'];
+  for(const c of comps){
+    const teams = seasonTeams(c);
+    let hit = teams.find(t => normName(t) === n);
+    if(hit) return { team:hit, comp:c };
+    const alias = NAME_ALIASES[n];
+    if(alias){
+      hit = teams.find(t => normName(t) === normName(alias));
+      if(hit) return { team:hit, comp:c };
+    }
+    const partial = teams.filter(t => { const tn = normName(t); return tn.includes(n) || n.includes(tn); });
+    if(partial.length === 1) return { team:partial[0], comp:c };
+  }
+  return null;
+}
+
+function seasonMatchdays(comp){
+  const src = (DB.season && DB.season[comp]) || {};
+  return Object.keys(src).map(Number)
+    .filter(n => Number.isFinite(n) && n >= 1 && n <= MD_COUNT && (src[n]||[]).length)
+    .sort((a,b) => a-b);
+}
+
+// Départage UEFA de la phase de ligue : points, différence de buts, buts marqués,
+// buts marqués à l'extérieur, victoires, victoires à l'extérieur.
+function compareTeams(a, b){
+  if(b.pts !== a.pts) return b.pts - a.pts;
+  const gdA = a.gf - a.ga, gdB = b.gf - b.ga;
+  if(gdB !== gdA) return gdB - gdA;
+  if(b.gf !== a.gf) return b.gf - a.gf;
+  if(b.awayGf !== a.awayGf) return b.awayGf - a.awayGf;
+  if(b.w !== a.w) return b.w - a.w;
+  if(b.awayW !== a.awayW) return b.awayW - a.awayW;
+  return a.name.localeCompare(b.name, 'fr');
+}
+
+/*
+  Gains cumulés d'une compétition, journée par journée.
+  Acquis   = starting fee + bonus de victoires et de nuls déjà disputés.
+  Projeté  = acquis + ranking bonus et bonus de classement au rang provisoire.
+  Le ranking bonus n'est dû qu'au terme de la phase de ligue : il ne figure
+  jamais dans les gains acquis, seulement dans la projection.
+*/
+function computeSeason(comp){
+  const cfg = LEAGUE_CONFIG[comp];
+  const mds = seasonMatchdays(comp);
+  const teams = new Map();
+  const get = (name) => {
+    if(!teams.has(name)){
+      teams.set(name, { name, played:0, w:0, d:0, l:0, gf:0, ga:0, awayW:0, awayGf:0, pts:0, byMd:{}, cum:{} });
+    }
+    return teams.get(name);
+  };
+
+  mds.forEach(md => {
+    (DB.season[comp][md] || []).forEach(m => {
+      const home = m[0], away = m[3];
+      const hg = Number(m[1]), ag = Number(m[2]);
+      if(!home || !away || !Number.isFinite(hg) || !Number.isFinite(ag)) return;
+      const H = get(home), A = get(away);
+      H.played++; A.played++;
+      H.gf += hg; H.ga += ag; A.gf += ag; A.ga += hg; A.awayGf += ag;
+      let hres, ares;
+      if(hg > ag){ H.w++; A.l++; H.pts += 3; hres='V'; ares='D'; }
+      else if(hg < ag){ A.w++; A.awayW++; H.l++; A.pts += 3; hres='D'; ares='V'; }
+      else { H.d++; A.d++; H.pts++; A.pts++; hres='N'; ares='N'; }
+      H.byMd[md] = { res:hres, opp:away, home:true,  score:hg + '-' + ag };
+      A.byMd[md] = { res:ares, opp:home, home:false, score:ag + '-' + hg };
+    });
+  });
+
+  const start = cfg.startingDown + cfg.startingBalance;
+  teams.forEach(t => {
+    let acc = start;
+    mds.forEach(md => {
+      const e = t.byMd[md];
+      if(e) acc += (e.res === 'V' ? cfg.winBonus : e.res === 'N' ? cfg.drawBonus : 0);
+      t.cum[md] = acc;
+    });
+    t.earned = acc;
+  });
+
+  const table = [...teams.values()].sort(compareTeams);
+  table.forEach((t, i) => {
+    t.rank = i + 1;
+    t.parts = 37 - t.rank;
+    t.rankingBonus = t.parts * cfg.valuePerPart;
+    t.placementBonus = t.rank <= 8 ? cfg.top8 : (t.rank <= 16 ? cfg.top9_16 : 0);
+    t.projected = t.earned + t.rankingBonus + t.placementBonus;
+    t.zone = t.rank <= 8 ? 'top8' : (t.rank <= 24 ? 'po' : 'out');
+  });
+  return { comp, cfg, mds, table, start };
+}
+
+/* ---------- Saisie et import d'une journée ---------- */
+
+function parseMatchdayText(text){
+  const out = [];
+  const errors = [];
+  let comp = null, md = null;
+  const lines = String(text || '').split(/\r?\n/);
+
+  lines.forEach((raw, i) => {
+    const line = raw.trim();
+    if(!line || /^(club|competition|comp)\s*,/i.test(line)) return;
+
+    // En-tête « UCL MD2 », « UEL J3 », « Conference League journée 4 »
+    const head = line.match(/^(UCL|UEL|UECL|LDC|C1|C3|C4)\s*[-–:]?\s*(?:MD|J|journ[ée]e|matchday)?\s*(\d{1,2})$/i);
+    if(head){
+      comp = normComp(head[1]) || (head[1].toUpperCase() === 'C1' ? 'UCL' : head[1].toUpperCase() === 'C3' ? 'UEL' : head[1].toUpperCase() === 'C4' ? 'UECL' : null);
+      md = parseInt(head[2], 10);
+      return;
+    }
+
+    // Ligne CSV « comp,md,domicile,buts,buts,extérieur »
+    if(line.indexOf(',') >= 0){
+      const c = line.split(',').map(x => x.trim());
+      if(c.length >= 6){
+        const cc = normComp(c[0]), mm = parseInt(c[1], 10);
+        const hg = parseInt(c[3], 10), ag = parseInt(c[4], 10);
+        if(cc && mm >= 1 && mm <= MD_COUNT && c[2] && c[5] && Number.isFinite(hg) && Number.isFinite(ag)){
+          out.push({ comp:cc, md:mm, row:[c[2], hg, ag, c[5]] });
+          return;
+        }
+      }
+      errors.push('Ligne ' + (i+1) + ' illisible : ' + line);
+      return;
+    }
+
+    // Ligne de match « Real Madrid 2-1 Inter »
+    const m = line.match(/^(.+?)\s+(\d{1,2})\s*[-–:x]\s*(\d{1,2})\s+(.+?)$/);
+    if(m){
+      if(!comp || !md){ errors.push('Ligne ' + (i+1) + " : aucune journée déclarée avant « " + line + " »"); return; }
+      out.push({ comp, md, row:[m[1].trim(), parseInt(m[2],10), parseInt(m[3],10), m[4].trim()] });
+      return;
+    }
+    errors.push('Ligne ' + (i+1) + ' illisible : ' + line);
+  });
+
+  return { entries: out, errors };
+}
+
+function importMatchday(){
+  const ta = document.getElementById('md-text');
+  const { entries, errors } = parseMatchdayText(ta.value);
+  if(!entries.length){
+    setStatus('md-status', errors.length ? errors[0] : 'Aucun match reconnu.', true);
+    return;
+  }
+
+  // Rattache les noms saisis aux équipes déjà connues de la compétition,
+  // pour qu'une orthographe différente ne crée pas un doublon au classement.
+  const unknown = [];
+  entries.forEach(e => {
+    const known = seasonTeams(e.comp).length > 0;
+    [0, 3].forEach(i => {
+      const hit = resolveTeamName(e.row[i], e.comp);
+      if(hit) e.row[i] = hit.team;
+      else if(known && unknown.indexOf(e.row[i]) < 0) unknown.push(e.row[i]);
+    });
+  });
+
+  const groups = {};
+  entries.forEach(e => {
+    const k = e.comp + '|' + e.md;
+    (groups[k] = groups[k] || []).push(e.row);
+  });
+  const touched = [];
+  Object.keys(groups).forEach(k => {
+    const [comp, md] = k.split('|');
+    DB.season[comp] = DB.season[comp] || {};
+    DB.season[comp][md] = groups[k];
+    touched.push(COMP_NAME[comp] + ' J' + md + ' : ' + groups[k].length + ' match(s)');
+  });
+  saveAll();
+  setStatus('md-status',
+    'Enregistré — ' + touched.join(', ')
+    + (errors.length ? ' — ' + errors.length + ' ligne(s) ignorée(s).' : '.')
+    + (unknown.length ? ' Nouveaux noms non rattachés : ' + unknown.join(', ') + '.' : ''),
+    unknown.length > 0);
+  ta.value = '';
+  render();
+}
+
+function deleteMatchday(comp, md){
+  if(!confirm('Supprimer les résultats de ' + COMP_NAME[comp] + ' journée ' + md + ' ?')) return;
+  if(DB.season[comp]) delete DB.season[comp][md];
+  saveAll(); render();
+}
+
+function restoreOfficialResults(){
+  if(!confirm('Remplacer les journées saisies par les résultats officiels embarqués ?')) return;
+  DB.season = JSON.parse(JSON.stringify(SEASON_RESULTS));
+  saveAll(); render();
+}
+
+// Complète les journées embarquées absentes du stockage, sans écraser les saisies.
+function mergeSeasonDefaults(){
+  DB.season = DB.season || {};
+  Object.keys(SEASON_RESULTS).forEach(comp => {
+    DB.season[comp] = DB.season[comp] || {};
+    Object.keys(SEASON_RESULTS[comp]).forEach(md => {
+      if(!DB.season[comp][md] || !DB.season[comp][md].length){
+        DB.season[comp][md] = SEASON_RESULTS[comp][md].map(r => r.slice());
+      }
+    });
+  });
+}
+
+/* ---------- Report des résultats officiels vers la fiche d'un club ---------- */
+
+function seasonEntryForClub(club){
+  const hit = resolveTeamName(club.name, club.league.competition || null);
+  if(!hit) return null;
+  const s = computeSeason(hit.comp);
+  const t = s.table.find(x => x.name === hit.team);
+  return t ? { comp:hit.comp, team:t, season:s } : null;
+}
+
+function syncClubFromSeason(){
+  const club = currentClub();
+  if(!club) return;
+  const hit = seasonEntryForClub(club);
+  if(!hit) return;
+  const { comp, team, season } = hit;
+  club.league.competition = comp;
+  club.league.matches = season.mds
+    .filter(md => team.byMd[md])
+    .map(md => ({
+      id: uid(),
+      label: 'J' + md + ' ' + (team.byMd[md].home ? 'contre ' : 'à ') + team.byMd[md].opp + ' ' + team.byMd[md].score,
+      result: team.byMd[md].res
+    }));
+  club.league.ranking = String(team.rank);
+  saveAll(); render();
+}
+
+/* ============================= RENDU : VUE SAISON ============================= */
+
+function setView(v){
+  DB.view = v;
+  clearStatus();
+  saveAll();
+  render();
+}
+
+function renderTabs(){
+  const el = document.getElementById('tabs');
+  if(!el) return;
+  const v = DB.view === 'season' ? 'season' : 'clubs';
+  el.innerHTML = `
+    <button class="tab ${v==='clubs'?'active':''}" onclick="setView('clubs')">Fiche club</button>
+    <button class="tab ${v==='season'?'active':''}" onclick="setView('season')">Saison &amp; évolution</button>
+  `;
+}
+
+function compPickerHtml(){
+  return ['UCL','UEL','UECL'].map(c => {
+    const n = seasonMatchdays(c).length;
+    return `<button class="chip ${DB.seasonComp===c?'active':''}" onclick="updateSeasonComp('${c}')">
+      <span class="comp-tag ${c}">${c}</span> ${COMP_NAME[c]} <span class="chip-count">${n ? n + ' J' : '—'}</span>
+    </button>`;
+  }).join('');
+}
+
+function updateSeasonComp(c){ DB.seasonComp = c; saveAll(); render(); }
+
+function moneyShort(n){
+  if(!n) return '0';
+  const m = n / 1000000;
+  return (m >= 10 ? m.toFixed(1) : m.toFixed(2)).replace('.', ',') + ' M';
+}
+
+// Courbe des gains cumulés du club, du starting fee à la dernière journée.
+function evolutionChart(team, season){
+  const mds = season.mds;
+  if(!mds.length) return '';
+  const steps = [{ lab:'J0', v:season.start }]
+    .concat(mds.map(md => ({ lab:'J' + md, v:team.cum[md] === undefined ? season.start : team.cum[md] })));
+  const W = 640, H = 200, padL = 62, padR = 16, padT = 16, padB = 28;
+  const lastMd = mds[mds.length - 1];
+  const maxV = Math.max(season.start * 1.02, ...season.table.map(t => t.cum[lastMd] || season.start));
+  const minV = season.start;
+  const x = i => padL + (steps.length === 1 ? 0 : i * (W - padL - padR) / (steps.length - 1));
+  const y = v => padT + (H - padT - padB) * (1 - (v - minV) / Math.max(1, maxV - minV));
+  const pts = steps.map((st, i) => [x(i), y(st.v)]);
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const area = line + ' L' + pts[pts.length-1][0].toFixed(1) + ' ' + (H-padB) + ' L' + pts[0][0].toFixed(1) + ' ' + (H-padB) + ' Z';
+  const grid = [0, 0.5, 1].map(f => {
+    const v = minV + f * (maxV - minV);
+    return `<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="rgba(11,28,61,0.12)" stroke-width="1"/>
+            <text x="${padL-8}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#5C6470" font-family="IBM Plex Mono, monospace">${moneyShort(v)}€</text>`;
+  }).join('');
+  return `
+    <svg class="evo-chart" viewBox="0 0 ${W} ${H}" role="img"
+         aria-label="Gains cumulés de ${escapeHtml(team.name)} journée par journée">
+      ${grid}
+      <path d="${area}" fill="rgba(169,126,30,0.14)"/>
+      <path d="${line}" fill="none" stroke="#A97E1E" stroke-width="2" stroke-linejoin="round"/>
+      ${pts.map((p, i) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="#fff" stroke="#A97E1E" stroke-width="2"/>
+        <text x="${p[0].toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="10" fill="#5C6470" font-family="IBM Plex Mono, monospace">${steps[i].lab}</text>`).join('')}
+    </svg>`;
+}
+
+function renderSeasonView(main){
+  const comp = DB.seasonComp || 'UCL';
+  const s = computeSeason(comp);
+  const club = currentClub();
+  const mine = club ? (resolveTeamName(club.name, comp) || {}).team : null;
+
+  const lastMd = s.mds.length ? s.mds[s.mds.length-1] : null;
+  const prevMd = s.mds.length > 1 ? s.mds[s.mds.length-2] : null;
+
+  const rows = s.table.map(t => {
+    const gain = lastMd ? (t.cum[lastMd] - (prevMd ? t.cum[prevMd] : s.start)) : 0;
+    return `
+    <tr class="${t.name===mine?'me':''} zone-${t.zone}">
+      <td class="nb rank">${t.rank}</td>
+      <td class="team">${escapeHtml(t.name)}</td>
+      <td class="nb">${t.played}</td>
+      <td class="nb">${t.pts}</td>
+      <td class="nb">${t.gf - t.ga > 0 ? '+' : ''}${t.gf - t.ga}</td>
+      <td class="nb money">${formatEUR(t.earned)}</td>
+      <td class="nb delta">${gain ? '+' + moneyShort(gain) + '€' : '—'}</td>
+      <td class="nb money proj">${formatEUR(t.projected)}</td>
+    </tr>`;
+  }).join('');
+
+  const evoHead = s.mds.map(md => `<th class="nb">J${md}</th>`).join('');
+  const evoRows = s.table.map(t => `
+    <tr class="${t.name===mine?'me':''}">
+      <td class="nb rank">${t.rank}</td>
+      <td class="team">${escapeHtml(t.name)}</td>
+      ${s.mds.map(md => {
+        const e = t.byMd[md];
+        return `<td class="nb money">
+          <span class="res ${e ? e.res : 'none'}">${e ? e.res : '·'}</span> ${formatEUR(t.cum[md])}
+        </td>`;
+      }).join('')}
+    </tr>`).join('');
+
+  const savedMds = ['UCL','UEL','UECL'].flatMap(c => seasonMatchdays(c).map(md => ({c, md})));
+
+  main.innerHTML = `
+    <div class="panel">
+      <h3><span class="num">A</span> Compétition</h3>
+      <div class="chips">${compPickerHtml()}</div>
+      <p class="hint" style="margin-top:12px;">
+        ${s.mds.length
+          ? `Journées enregistrées : ${s.mds.map(md => 'J' + md).join(', ')}. Dernière journée prise en compte : J${lastMd}${MD_DATES[comp] && MD_DATES[comp][lastMd] ? ', ' + MD_DATES[comp][lastMd] : ''}. ${s.table.length} clubs.`
+          : `Aucun résultat enregistré pour cette compétition. Journée 1 prévue le ${(MD_DATES[comp]||{})[1] || 'à confirmer'}.`}
+      </p>
+    </div>
+
+    ${s.mds.length ? `
+    <div class="panel">
+      <h3><span class="num">B</span> Classement et gains ${COMP_NAME[comp]}</h3>
+      <p class="hint">
+        <strong>Acquis</strong> : starting fee et bonus de résultats déjà engrangés.
+        <strong>Projection</strong> : acquis plus ranking bonus et bonus de classement au rang provisoire, dus seulement au terme de la phase de ligue.
+      </p>
+      <div class="table-scroll">
+        <table class="season">
+          <thead><tr>
+            <th class="nb">#</th><th>Club</th><th class="nb">J</th><th class="nb">Pts</th><th class="nb">Diff</th>
+            <th class="nb">Gains acquis</th><th class="nb">Dont J${lastMd}</th><th class="nb">Projection fin de phase</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <div class="zone-legend">
+        <span><i class="z top8"></i> 1-8 : qualifiés directs pour les 8es</span>
+        <span><i class="z po"></i> 9-24 : barrages / play-offs de phase finale</span>
+        <span><i class="z out"></i> 25-36 : éliminés</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3><span class="num">C</span> Évolution des gains cumulés</h3>
+      <p class="hint">Montant acquis au terme de chaque journée, résultat du club à cette journée en préfixe.</p>
+      <div class="table-scroll">
+        <table class="season evo">
+          <thead><tr><th class="nb">#</th><th>Club</th>${evoHead}</tr></thead>
+          <tbody>${evoRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    ${mine ? (() => {
+      const t = s.table.find(x => x.name === mine);
+      return `
+      <div class="panel">
+        <h3><span class="num">D</span> ${escapeHtml(t.name)} — trajectoire</h3>
+        <div class="kpis">
+          <div class="kpi"><span class="k-label">Rang provisoire</span><span class="k-val">${t.rank}<small> / ${s.table.length}</small></span></div>
+          <div class="kpi"><span class="k-label">Gains acquis</span><span class="k-val mono">${formatEUR(t.earned)}</span></div>
+          <div class="kpi"><span class="k-label">Ranking bonus projeté</span><span class="k-val mono">${formatEUR(t.rankingBonus + t.placementBonus)}</span></div>
+          <div class="kpi"><span class="k-label">Projection fin de phase</span><span class="k-val mono">${formatEUR(t.projected)}</span></div>
+        </div>
+        ${evolutionChart(t, s)}
+        <div class="md-log">
+          ${s.mds.map(md => {
+            const e = t.byMd[md];
+            if(!e) return `<div class="md-line"><span class="md-tag">J${md}</span> <span class="md-txt">non disputée</span></div>`;
+            const bonus = e.res === 'V' ? s.cfg.winBonus : e.res === 'N' ? s.cfg.drawBonus : 0;
+            return `<div class="md-line">
+              <span class="md-tag">J${md}</span>
+              <span class="res ${e.res}">${e.res}</span>
+              <span class="md-txt">${e.home ? 'contre' : 'à'} ${escapeHtml(e.opp)} ${e.score}</span>
+              <span class="md-amt">${bonus ? '+ ' + formatEUR(bonus) : '—'}</span>
+              <span class="md-cum">${formatEUR(t.cum[md])}</span>
+            </div>`;
+          }).join('')}
+        </div>
+        <button class="btn ghost small" onclick="setView('clubs'); syncClubFromSeason();">
+          Reporter ces résultats sur la fiche de ${escapeHtml(club.name)}
+        </button>
+      </div>`;
+    })() : (club ? `
+      <div class="panel">
+        <p class="hint" style="margin:0;">« ${escapeHtml(club.name)} » ne figure pas dans les résultats enregistrés de cette compétition.</p>
+      </div>` : '')}
+    ` : ''}
+
+    <div class="panel">
+      <h3><span class="num">↓</span> Ajouter ou corriger une journée</h3>
+      <p class="hint">Déclarez la compétition et la journée, puis collez les scores. Une journée déjà enregistrée est remplacée.</p>
+      <textarea id="md-text" placeholder="UCL MD2&#10;Arsenal 2-1 Real Madrid&#10;..."></textarea>
+      <div class="import-actions">
+        <button class="btn" onclick="importMatchday()">Enregistrer la journée</button>
+        <button class="btn ghost small" onclick="restoreOfficialResults()">Restaurer les résultats officiels</button>
+        <span class="import-status" id="md-status"></span>
+      </div>
+      <div class="import-example">UCL MD2
+Arsenal 2-1 Real Madrid
+Bayern Munich 0-0 Liverpool
+
+UEL J1
+Roma 3-1 Fenerbahçe
+
+Format CSV équivalent : UCL,2,Arsenal,2,1,Real Madrid</div>
+      ${savedMds.length ? `
+      <div class="subhead">Journées enregistrées</div>
+      <div class="md-chips">
+        ${savedMds.map(({c, md}) => `<span class="md-chip"><span class="comp-tag ${c}">${c}</span> J${md}
+          <button class="icon-btn" title="Supprimer" onclick="deleteMatchday('${c}', ${md})">✕</button></span>`).join('')}
+      </div>` : ''}
+    </div>
+  `;
+  setMobileTotal(null);
+}
+
+/* ============================= RENDER ============================= */
+
+function render(){
+  renderTabs();
+  renderClubList();
+  renderMain();
+  paintStatus();
+}
+
+function renderClubList(){
+  const el = document.getElementById('club-list');
+  const clubs = Object.values(DB.clubs).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!clubs.length){
+    el.innerHTML = '<div style="font-size:12px;color:var(--steel);">Aucun club suivi.</div>';
+    return;
+  }
+  el.innerHTML = clubs.map(c => `
+    <div class="club-item ${c.id===DB.selected?'active':''}" onclick="selectClub('${c.id}')">
+      <span>${escapeHtml(c.name)}</span>
+      <button class="del" title="Supprimer" onclick="deleteClub('${c.id}', event)">✕</button>
+    </div>
+  `).join('');
+}
+
+function renderMain(){
+  const main = document.getElementById('main-content');
+  if(DB.view === 'season'){ renderSeasonView(main); return; }
+  const club = currentClub();
+  if(!club){
+    main.innerHTML = `
+      <div class="panel empty-state">
+        <h3>Aucun club sélectionné</h3>
+        <p>Ajoutez un club dans la colonne de gauche, ou importez un bloc de résultats ci-dessous.</p>
+      </div>
+      ${importPanelHtml(true)}
+    `;
+    attachImportHandlers();
+    setMobileTotal(null);
+    return;
+  }
+
+  const calc = calcClub(club);
+  const vp = calcValuePillar(club);
+
+  main.innerHTML = `
+    <div class="club-header">
+      <h2>${escapeHtml(club.name)}</h2>
+      <button class="btn ghost small reset" onclick="resetClub()">Réinitialiser ce club</button>
+    </div>
+
+    <div class="panel">
+      <h3><span class="num">1</span> Qualifications</h3>
+      <p class="hint">Depuis le premier tour de qualification jusqu'à l'élimination ou la qualification pour la phase de ligue.</p>
+      <label class="checkline">
+        <input type="checkbox" ${club.qualif.active?'checked':''} onchange="toggleField('qualif.active')"/>
+        Le club a disputé des tours de qualification
+      </label>
+      ${club.qualif.active ? qualifFieldsHtml(club) : ''}
+
+      <label class="checkline" style="margin-top:14px;">
+        <input type="checkbox" ${club.championBonus?'checked':''} onchange="toggleField('championBonus')"/>
+        Champion national n'ayant pas atteint la phase de ligue (+260 000 €)
+      </label>
+    </div>
+
+    <div class="panel">
+      <h3><span class="num">2</span> Phase de ligue</h3>
+      <div class="row">
+        <div class="field">
+          <label>Compétition atteinte</label>
+          <select onchange="updateField('league.competition', this.value)">
+            <option value="" ${!club.league.competition?'selected':''}>Non atteinte</option>
+            <option value="UCL" ${club.league.competition==='UCL'?'selected':''}>UEFA Champions League</option>
+            <option value="UEL" ${club.league.competition==='UEL'?'selected':''}>UEFA Europa League</option>
+            <option value="UECL" ${club.league.competition==='UECL'?'selected':''}>UEFA Conference League</option>
+          </select>
+        </div>
+        ${club.league.competition ? `
+        <div class="field">
+          <label>Classement provisoire (1-36)</label>
+          <input type="number" min="1" max="36" value="${escapeHtml(club.league.ranking)}" onchange="updateField('league.ranking', this.value)"/>
+        </div>` : ''}
+      </div>
+
+      ${seasonLinkHtml(club)}
+
+      ${club.league.competition ? `
+      <div class="subhead">Résultats de la phase de ligue</div>
+      <div class="matches" id="matches-list">
+        ${(club.league.matches||[]).map(m => matchRowHtml(m)).join('') || '<div style="font-size:12px;color:var(--steel);">Aucun match saisi.</div>'}
+      </div>
+      <button class="btn ghost small" onclick="addMatch()">+ Ajouter un match</button>
+      ` : '<p class="hint" style="margin-top:10px;">Sélectionnez une compétition pour saisir les résultats.</p>'}
+    </div>
+
+    ${club.league.competition ? `
+    <div class="panel">
+      <h3><span class="num">3</span> Phase à élimination directe</h3>
+      <div class="row">
+        <div class="field wide">
+          <label>Étape atteinte</label>
+          <select onchange="updateField('knockout.stage', this.value)">
+            ${KO_STAGE_OPTIONS.map(([v,l])=>`<option value="${v}" ${club.knockout.stage===v?'selected':''}>${l}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <p class="hint">Les barrages / play-offs de phase finale (à ne pas confondre avec les barrages de qualification d'août) ne s'appliquent qu'aux clubs classés 9-24. Rang 1-8 : qualification directe pour les 8es. Rang 25-36 : pas de phase à élimination directe.</p>
+    </div>` : ''}
+
+    ${club.league.competition === 'UCL' ? `
+    <div class="panel">
+      <h3><span class="num">4</span> Supercoupe d'Europe</h3>
+      <div class="row">
+        <div class="field wide-sm">
+          <label>Statut</label>
+          <select onchange="updateField('superCoupe', this.value)">
+            <option value="aucun" ${club.superCoupe==='aucun'?'selected':''}>N'a pas participé</option>
+            <option value="finaliste" ${club.superCoupe==='finaliste'?'selected':''}>Finaliste (4M€)</option>
+            <option value="vainqueur" ${club.superCoupe==='vainqueur'?'selected':''}>Vainqueur (4M€ + 1M€)</option>
+          </select>
+        </div>
+      </div>
+    </div>` : ''}
+
+    <div class="panel">
+      <h3><span class="num">5</span> Value Pillar (indicatif, hors total)</h3>
+      <p class="hint">
+        ${club.league.competition
+          ? `Même mécanisme à 666 parts que le ranking bonus (37 − rang), valeur/part propre à ${club.league.competition} : ${formatEUR(VP_VALUE_PER_PART[club.league.competition].european)} (partie européenne) / ${formatEUR(VP_VALUE_PER_PART[club.league.competition].nonEuropean)} (partie non-européenne). Classements réels non calculables ici (dépendent des ventes de droits TV, volatiles).`
+          : `Sélectionnez d'abord une compétition en section 2 pour activer l'estimation.`}
+      </p>
+      <div class="row">
+        <div class="field">
+          <label>Rang partie européenne (1-36)</label>
+          <input type="number" min="1" max="36" value="${escapeHtml(club.valuePillar.rankEuropean)}" onchange="updateField('valuePillar.rankEuropean', this.value)" ${club.league.competition?'':'disabled'}/>
+        </div>
+        <div class="field">
+          <label>Rang partie non-européenne (1-36)</label>
+          <input type="number" min="1" max="36" value="${escapeHtml(club.valuePillar.rankNonEuropean)}" onchange="updateField('valuePillar.rankNonEuropean', this.value)" ${club.league.competition?'':'disabled'}/>
+        </div>
+      </div>
+    </div>
+
+    ${importPanelHtml(false)}
+
+    <div class="panel results">
+      <h3>Détail du prize money — ${escapeHtml(club.name)}</h3>
+      <table class="breakdown">
+        <thead><tr><th>Poste de paiement</th><th>Montant</th></tr></thead>
+        <tbody>
+          ${calc.lines.length ? calc.lines.map(l => `
+            <tr>
+              <td>${l.tag ? `<span class="comp-tag ${l.tag}">${l.tag}</span> ` : ''}${escapeHtml(l.label)}</td>
+              <td class="amount">${formatEUR(l.amount)}</td>
+            </tr>
+          `).join('') : `<tr class="empty-row"><td colspan="2">Aucune donnée saisie pour ce club.</td></tr>`}
+          <tr class="total">
+            <td>Total hors Value Pillar</td>
+            <td class="amount">${formatEUR(calc.total)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="vp-box">
+        <div class="vp-title">Value Pillar (estimation indicative)</div>
+        ${vp.noComp
+          ? `<div class="vp-line">Aucune compétition de phase de ligue sélectionnée.</div>`
+          : (vp.lines.length ? vp.lines.map(l=>`<div class="vp-line">${l}</div>`).join('') + `<div class="vp-total">Estimation indicative : ${formatEUR(vp.total)}</div>` : `<div class="vp-line">Aucun rang renseigné.</div>`)}
+        <div class="vp-disclaimer">
+          Non calculable par club — dépend des marchés TV, volatils. Consulter le simulateur officiel UEFA
+          (finance.simulator@uefa.ch). Valeurs ci-dessus : estimation, non officielle.
+        </div>
+      </div>
+    </div>
+  `;
+
+  attachImportHandlers();
+  setMobileTotal(calc.total);
+}
+
+// Encart affiché quand le club figure dans les résultats officiels enregistrés.
+function seasonLinkHtml(club){
+  const hit = seasonEntryForClub(club);
+  if(!hit) return '';
+  const played = hit.season.mds.filter(md => hit.team.byMd[md]).length;
+  if(!played) return '';
+  return `
+    <div class="season-link">
+      <div class="sl-txt">
+        <span class="comp-tag ${hit.comp}">${hit.comp}</span>
+        Résultats officiels disponibles pour <strong>${escapeHtml(hit.team.name)}</strong> :
+        ${played} journée${played > 1 ? 's' : ''} disputée${played > 1 ? 's' : ''}, rang provisoire ${hit.team.rank}, gains acquis ${formatEUR(hit.team.earned)}.
+      </div>
+      <button class="btn ghost small" onclick="syncClubFromSeason()">Reporter sur cette fiche</button>
+    </div>
+  `;
+}
+
+function qualifFieldsHtml(club){
+  return `
+    <div class="row" style="margin-top:6px;">
+      <div class="field">
+        <label>Compétition de départ</label>
+        <select onchange="updateField('qualif.competition', this.value)">
+          <option value="UCL" ${club.qualif.competition==='UCL'?'selected':''}>UEFA Champions League</option>
+          <option value="UEL" ${club.qualif.competition==='UEL'?'selected':''}>UEFA Europa League</option>
+          <option value="UECL" ${club.qualif.competition==='UECL'?'selected':''}>UEFA Conference League</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tour d'entrée</label>
+        <select onchange="updateField('qualif.entryRound', this.value)">
+          ${ROUND_ORDER.map(r=>`<option value="${r}" ${club.qualif.entryRound===r?'selected':''}>${ROUND_LABEL[r]}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Issue</label>
+        <select onchange="updateField('qualif.outcome', this.value)">
+          <option value="qualified" ${club.qualif.outcome==='qualified'?'selected':''}>Qualifié pour la phase de ligue</option>
+          <option value="eliminated" ${club.qualif.outcome==='eliminated'?'selected':''}>Éliminé en qualifications</option>
+        </select>
+      </div>
+      ${club.qualif.outcome==='eliminated' ? `
+      <div class="field">
+        <label>Tour d'élimination</label>
+        <select onchange="updateField('qualif.eliminationRound', this.value)">
+          ${ROUND_ORDER.map(r=>`<option value="${r}" ${club.qualif.eliminationRound===r?'selected':''}>${ROUND_LABEL[r]}</option>`).join('')}
+        </select>
+      </div>` : ''}
+    </div>
+  `;
+}
+
+function matchRowHtml(m){
+  return `
+    <div class="match-row" data-id="${m.id}">
+      <input type="text" value="${escapeHtml(m.label)}" placeholder="Journée / adversaire (optionnel)" onchange="updateMatch('${m.id}','label',this.value)"/>
+      <select onchange="updateMatch('${m.id}','result',this.value)">
+        <option value="V" ${m.result==='V'?'selected':''}>Victoire</option>
+        <option value="N" ${m.result==='N'?'selected':''}>Nul</option>
+        <option value="D" ${m.result==='D'?'selected':''}>Défaite</option>
+      </select>
+      <button class="icon-btn" title="Supprimer" onclick="removeMatch('${m.id}')">✕</button>
+    </div>
+  `;
+}
+
+function importPanelHtml(open){
+  return `
+    <div class="panel">
+      <details class="import-details" ${open ? 'open' : ''}>
+        <summary><span class="num">↓</span> Import en masse <span class="summary-hint">JSON ou CSV</span></summary>
+        ${importPanelInner()}
+      </details>
+    </div>
+  `;
+}
+
+function importPanelInner(){
+  return `
+    <p class="hint">Collez un bloc JSON ou CSV (colonnes : club, type, competition, detail, result). Un clic répartit automatiquement les lignes par club — crée les clubs manquants. Tours acceptés : Q1, Q2, Q3 et PO (barrages / play-offs de qualification).</p>
+    <textarea id="import-text" placeholder="Collez ici un tableau JSON ou un CSV..."></textarea>
+    <div class="import-actions">
+      <button class="btn" onclick="runImport()">Importer</button>
+      <span class="import-status" id="import-status"></span>
+    </div>
+    <div class="import-example">club,type,competition,detail,result
+Real Madrid,league,UCL,J3,V
+Slovan Bratislava,qualif,UEL,Q3,D
+Lech Poznan,qualif,UECL,PO,V</div>
+  `;
+}
+
+function attachImportHandlers(){
+  const btn = document.getElementById('import-text');
+  // handlers are inline via onclick/onchange, nothing else needed here.
+}
+
+/* ============================= INIT ============================= */
+
+(async function init(){
+  initCompact();
+  await loadAll();
+  render();
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){ /* hors ligne simplement indisponible */ });
+  });
+}
+</script>
+</body>
+</html>

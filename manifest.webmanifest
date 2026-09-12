@@ -1,0 +1,16 @@
+{
+  "name": "Prize Money UEFA 2026/27",
+  "short_name": "Prize Money",
+  "description": "Calculateur de prize money UEFA 2026/27 et suivi de l'évolution des gains par club, journée après journée.",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F5F2EA",
+  "theme_color": "#0B1C3D",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
