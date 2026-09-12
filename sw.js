@@ -7,7 +7,13 @@ const SHELL = [
   './manifest.webmanifest',
   './icons/icon-180.png',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  // Résultats relevés sur UEFA.com : mis en cache dès l'installation pour que
+  // l'application reste complète sans réseau. Rafraîchis à chaque visite en ligne.
+  './data/ucl.json',
+  './data/uel.json',
+  './data/uecl.json',
+  './data/supercoupe.json'
 ];
 
 self.addEventListener('install', event => {
