@@ -83,6 +83,10 @@
     background:var(--paper);
     border:1px solid var(--navy);
   }
+  .seal img{
+    position:absolute; inset:-1px; width:calc(100% + 2px); height:calc(100% + 2px);
+    border-radius:50%; z-index:3; object-fit:cover;
+  }
   .seal span{
     position:relative; z-index:2;
     font-family:'Fraunces', serif; font-weight:700; font-size:11px; letter-spacing:0.02em;
@@ -311,6 +315,34 @@
 
   .md-line.ko .md-tag{ border-color:var(--gold); color:var(--gold); }
   table.season td.pts{ font-weight:600; color:var(--navy); }
+
+
+  /* ---------- Logos de clubs ---------- */
+  .club-logo{
+    width:18px; height:18px; object-fit:contain; flex:none; vertical-align:-4px;
+  }
+  .club-logo.big{ width:38px; height:38px; vertical-align:middle; }
+  table.season td.team .club-logo{ margin-right:6px; }
+  .match-line .ml-team .club-logo{ vertical-align:-4px; }
+  .match-line .ml-team.home .club-logo{ margin-left:7px; }
+  .match-line .ml-team.away .club-logo{ margin-right:7px; }
+  .panel h3 .club-logo{ width:22px; height:22px; }
+
+  /* ---------- Sélecteur de club ---------- */
+  .club-picker{ margin-bottom:8px; }
+  .club-picker select{ width:100%; font-size:13px; }
+  .picker-vide{ font-size:11.5px; color:var(--steel); padding:6px 0; }
+  .club-libre summary{
+    list-style:none; cursor:pointer; font-size:11.5px; color:var(--steel);
+    padding:3px 0; display:flex; align-items:center; gap:5px;
+  }
+  .club-libre summary::-webkit-details-marker{ display:none; }
+  .club-libre summary::before{ content:'+'; font-family:'IBM Plex Mono', monospace; }
+  .club-libre summary:hover{ color:var(--navy); }
+  .club-libre .add-club{ margin-top:6px; }
+
+  .club-item{ gap:7px; }
+  .club-item .ci-nom{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
   /* ---------- Provenance des données ---------- */
 
@@ -552,6 +584,11 @@
       background:var(--navy); color:var(--paper);
       box-shadow:0 -2px 10px rgba(11,28,61,0.18);
     }
+    .club-logo{ width:20px; height:20px; }
+    .club-logo.big{ width:34px; height:34px; }
+    .club-picker select{ font-size:16px; }
+    .club-item .ci-nom{ flex:none; }
+    table.season td.team .club-logo{ margin-right:5px; }
     .match-line{ font-size:13px; gap:7px; padding:9px 2px; }
     .match-line .ml-score{ font-size:13px; padding:3px 7px; }
     .match-line .ml-heure{ font-size:11.5px; padding:3px 6px; }
@@ -589,7 +626,7 @@
 
 <div class="letterhead">
   <div class="lh-left">
-    <div class="seal"><span>UEFA</span></div>
+    <div class="seal"><img src="icons/icon-192.png" alt="" onerror="this.remove()"/><span>UEFA</span></div>
     <div class="lh-title">
       <h1>Calculateur de Prize Money</h1>
       <div class="ref">Circular Letter n°48/2026 — 13 juillet 2026 — Cycle 2024-27</div>
@@ -610,10 +647,14 @@
   <aside class="rail">
     <h2>Clubs suivis</h2>
     <div class="club-list" id="club-list"></div>
-    <div class="add-club">
-      <input type="text" id="new-club-name" placeholder="Nom du club" onkeydown="if(event.key==='Enter')addClub()"/>
-      <button class="btn small" onclick="addClub()">+ Ajouter</button>
-    </div>
+    <div class="club-picker" id="club-picker"></div>
+    <details class="club-libre">
+      <summary>Autre club</summary>
+      <div class="add-club">
+        <input type="text" id="new-club-name" placeholder="Nom du club" onkeydown="if(event.key==='Enter')addClub()"/>
+        <button class="btn small" onclick="addClub()">+</button>
+      </div>
+    </details>
   </aside>
 
   <div class="main-col">
@@ -728,6 +769,7 @@ function newClub(name){
   return {
     id: uid(),
     name,
+    teamId: null,
     qualif: { active:false, entryRound:'Q1', competition:'UCL', outcome:'qualified', eliminationRound:'Q2' },
     championBonus: false,
     league: { competition:'', ranking:'', matches:[] },
@@ -956,10 +998,31 @@ function addClub(){
   const name = input.value.trim();
   if(!name) return;
   const c = newClub(name);
+  c.teamId = teamIdByName(name);
   DB.clubs[c.id] = c;
   DB.selected = c.id;
   input.value = '';
   saveAll(); render();
+}
+
+// Sélection dans le menu déroulant des clubs engagés.
+function addClubFromMenu(sel){
+  const id = sel.value;
+  sel.value = '';
+  if(!id) return;
+  let nom = null, comp = null;
+  allClubs().forEach(g => g.clubs.forEach(t => { if(t.id === id && !nom){ nom = t.n; comp = g.comp; } }));
+  if(!nom) return;
+  const existe = Object.values(DB.clubs).find(c => c.teamId === id || normName(c.name) === normName(nom));
+  if(existe){ DB.selected = existe.id; saveAll(); render(); return; }
+  const c = newClub(nom);
+  c.teamId = id;
+  DB.clubs[c.id] = c;
+  DB.selected = c.id;
+  saveAll();
+  render();
+  // Reprend d'emblée le parcours officiel du club.
+  if(comp) syncClubFromSeason();
 }
 
 function selectClub(id){ DB.selected = id; clearStatus(); saveAll(); render(); }
@@ -1358,6 +1421,49 @@ function qualifTotalFor(comp, teamName){
   return { lignes, total, segments, tours: segments.reduce((a, x) => a.concat(x.tours.map(t => x.comp + ' ' + t)), []) };
 }
 
+/* ---------- Logos de clubs ---------- */
+
+// Les fichiers sont nommés par identifiant UEFA, sans table de correspondance.
+function logoSrc(id){ return id ? 'assets/logos/' + id + '.png' : null; }
+
+// Identifiant d'une équipe d'après son nom, toutes compétitions confondues.
+function teamIdByName(name){
+  if(!name) return null;
+  const cible = normName(name);
+  for(const c of ['UCL','UEL','UECL']){
+    const t = liveTeams(c).find(x => x && x.n && normName(x.n) === cible);
+    if(t && t.id) return t.id;
+  }
+  const m = SUPERCOUPE.match;
+  if(m){
+    for(const cle of ['h','a']){
+      if(m[cle] && normName(m[cle].n) === cible) return m[cle].id;
+    }
+  }
+  return null;
+}
+
+// Vignette d'un club. Un fichier absent disparaît sans laisser de trou.
+function logoHtml(id, taille){
+  const src = logoSrc(id);
+  if(!src) return '';
+  return `<img class="club-logo${taille ? ' ' + taille : ''}" src="${src}" alt="" loading="lazy" onerror="this.remove()"/>`;
+}
+
+function logoForName(name, taille){ return logoHtml(teamIdByName(name), taille); }
+
+// Tous les clubs engagés, groupés par compétition, pour le menu déroulant.
+function allClubs(){
+  const out = [];
+  ['UCL','UEL','UECL'].forEach(c => {
+    const vus = new Map();
+    liveTeams(c).forEach(t => { if(t && t.id && t.n && !vus.has(t.id)) vus.set(t.id, t); });
+    const liste = [...vus.values()].sort((a, b) => a.n.localeCompare(b.n, 'fr'));
+    if(liste.length) out.push({ comp:c, clubs:liste });
+  });
+  return out;
+}
+
 function liveKnockout(comp){
   const p = LIVE[comp];
   return (p && p.phaseFinale) ? p.phaseFinale : [];
@@ -1547,7 +1653,11 @@ function computeSeason(comp){
   const total = mdTotal(comp);
   const ligueTerminee = table.length > 0 && table.every(t => t.played >= total);
 
+  const idParNom = {};
+  liveTeams(comp).forEach(x => { if(x && x.n && x.id) idParNom[x.n] = x.id; });
+
   table.forEach((t, i) => {
+    t.id = idParNom[t.name] || null;
     t.rank = i + 1;
     t.parts = 37 - t.rank;
     t.rankingBonus = t.parts * cfg.valuePerPart;
@@ -1729,6 +1839,7 @@ function syncClubFromSeason(){
   const hit = seasonEntryForClub(club);
   if(!hit) return;
   const { comp, team, season } = hit;
+  club.teamId = club.teamId || team.id || teamIdByName(team.name);
   club.league.competition = comp;
   club.league.matches = season.mds
     .filter(md => team.byMd[md])
@@ -1860,9 +1971,9 @@ function matchLineHtml(m){
   const tab = m.tab ? `<span class="ml-tab">tab ${m.tab[0]}-${m.tab[1]}</span>` : '';
   return `
     <div class="match-line ${joue ? '' : 'a-venir'}">
-      <span class="ml-team home ${gagnantDom?'gagnant':''}">${escapeHtml(m.h ? m.h.n : '?')}</span>
+      <span class="ml-team home ${gagnantDom?'gagnant':''}">${escapeHtml(m.h ? m.h.n : '?')}${logoHtml(m.h && m.h.id)}</span>
       ${centre}
-      <span class="ml-team away ${gagnantExt?'gagnant':''}">${escapeHtml(m.a ? m.a.n : '?')}</span>
+      <span class="ml-team away ${gagnantExt?'gagnant':''}">${logoHtml(m.a && m.a.id)}${escapeHtml(m.a ? m.a.n : '?')}</span>
       ${tab}
     </div>`;
 }
@@ -1988,7 +2099,7 @@ function renderTableView(main){
             ${rows.map(r => `
               <tr class="${r.nom===mine?'me':''} zone-${zoneOf(r.rang)}">
                 <td class="nb rank">${r.rang}</td>
-                <td class="team" title="${escapeHtml(r.full || r.nom)}">${escapeHtml(r.nom)}</td>
+                <td class="team" title="${escapeHtml(r.full || r.nom)}">${logoHtml(r.t && r.t.id)}${escapeHtml(r.nom)}</td>
                 <td class="nb">${r.j}</td><td class="nb">${r.g}</td><td class="nb">${r.n}</td><td class="nb">${r.p}</td>
                 <td class="nb">${r.bp}</td><td class="nb">${r.bc}</td>
                 <td class="nb">${r.diff > 0 ? '+' : ''}${r.diff}</td>
@@ -2055,7 +2166,7 @@ function renderSeasonView(main){
     return `
     <tr class="${t.name===mine?'me':''} zone-${t.zone}">
       <td class="nb rank">${t.rank}</td>
-      <td class="team">${escapeHtml(t.name)}</td>
+      <td class="team">${logoHtml(t.id)}${escapeHtml(t.name)}</td>
       <td class="nb">${t.played}</td>
       <td class="nb">${t.pts}</td>
       <td class="nb money">${formatEUR(t.earned)}</td>
@@ -2068,7 +2179,7 @@ function renderSeasonView(main){
   const evoRows = s.table.map(t => `
     <tr class="${t.name===mine?'me':''}">
       <td class="nb rank">${t.rank}</td>
-      <td class="team">${escapeHtml(t.name)}</td>
+      <td class="team">${logoHtml(t.id)}${escapeHtml(t.name)}</td>
       ${s.mds.map(md => {
         const e = t.byMd[md];
         return `<td class="nb money">
@@ -2131,7 +2242,7 @@ function renderSeasonView(main){
       if(!t) return '';
       return `
       <div class="panel">
-        <h3><span class="num">D</span> ${escapeHtml(t.name)} — trajectoire</h3>
+        <h3><span class="num">D</span> ${logoHtml(t.id)} ${escapeHtml(t.name)} — trajectoire</h3>
         <div class="kpis">
           <div class="kpi"><span class="k-label">Rang provisoire</span><span class="k-val">${t.rank}<small> / ${s.table.length}</small></span></div>
           <div class="kpi"><span class="k-label">Gains acquis</span><span class="k-val mono">${formatEUR(t.earned)}</span></div>
@@ -2226,9 +2337,28 @@ function refreshLive(){
 
 function render(){
   renderTabs();
+  renderClubPicker();
   renderClubList();
   renderMain();
   paintStatus();
+}
+
+function renderClubPicker(){
+  const el = document.getElementById('club-picker');
+  if(!el) return;
+  const groupes = allClubs();
+  if(!groupes.length){
+    el.innerHTML = '<div class="picker-vide">Liste des clubs en cours de chargement…</div>';
+    return;
+  }
+  el.innerHTML = `
+    <select id="club-select" onchange="addClubFromMenu(this)" aria-label="Ajouter un club engagé">
+      <option value="">+ Ajouter un club…</option>
+      ${groupes.map(g => `
+        <optgroup label="${COMP_NAME[g.comp]}">
+          ${g.clubs.map(t => `<option value="${t.id}">${escapeHtml(t.n)}</option>`).join('')}
+        </optgroup>`).join('')}
+    </select>`;
 }
 
 function renderClubList(){
@@ -2240,7 +2370,8 @@ function renderClubList(){
   }
   el.innerHTML = clubs.map(c => `
     <div class="club-item ${c.id===DB.selected?'active':''}" onclick="selectClub('${c.id}')">
-      <span>${escapeHtml(c.name)}</span>
+      ${logoHtml(c.teamId || teamIdByName(c.name))}
+      <span class="ci-nom">${escapeHtml(c.name)}</span>
       <button class="del" title="Supprimer" onclick="deleteClub('${c.id}', event)">✕</button>
     </div>
   `).join('');
@@ -2270,6 +2401,7 @@ function renderMain(){
 
   main.innerHTML = `
     <div class="club-header">
+      ${logoHtml(club.teamId || teamIdByName(club.name), 'big')}
       <h2>${escapeHtml(club.name)}</h2>
       <button class="btn ghost small reset" onclick="resetClub()">Réinitialiser ce club</button>
     </div>
@@ -2508,9 +2640,13 @@ function attachImportHandlers(){
   initCompact();
   await loadAll();
   render();
-  // Les résultats officiels arrivent ensuite et redessinent la vue.
-  const [sc, p] = await Promise.all([loadSupercoupe(), loadLive(DB.seasonComp || 'UCL')]);
-  if(sc || p) render();
+  // Les résultats officiels arrivent ensuite et redessinent la vue. Les trois
+  // compétitions sont chargées : le menu des clubs et les parcours de
+  // qualification croisés en ont besoin.
+  await Promise.all([loadSupercoupe(), loadLive(DB.seasonComp || 'UCL')]);
+  render();
+  await Promise.all(['UCL','UEL','UECL'].map(c => loadLive(c)));
+  render();
 })();
 </script>
 <script>

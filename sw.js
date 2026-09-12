@@ -1,5 +1,5 @@
 /* Service worker : rend l'application utilisable hors ligne. */
-const VERSION = 'fdc1e461a3';
+const VERSION = 'ef42f7a0a3';
 const CACHE = 'prize-money-' + VERSION;
 const SHELL = [
   './',

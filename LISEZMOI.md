@@ -7,6 +7,12 @@ club au fil des matchs.
 Quatre onglets : la fiche d'un club suivi, les matchs journée par journée puis
 tour par tour, le classement, et les gains avec leur évolution.
 
+Les clubs suivis se choisissent dans un menu déroulant des 108 engagés, groupé
+par compétition. Les écussons accompagnent les clubs dans toutes les vues.
+
+Application personnelle, sans lien avec l'UEFA. Les montants sont une
+estimation, les barèmes officiels font foi.
+
 ## Installer sur l'iPhone
 
 1. Ouvrir l'adresse de l'application dans **Safari** (pas Chrome : seul Safari
@@ -72,10 +78,39 @@ l'application suffit à récupérer la nouvelle version.
 | `index.html` | Fichier généré, ne pas modifier à la main |
 | `manifest.webmanifest` | Nom, icône et mode plein écran de l'application |
 | `sw.js` | Cache hors ligne, sa version change à chaque build |
-| `icons/` | Icônes de l'écran d'accueil et leur source `icon.html` |
+| `icons/` | Icônes de l'écran d'accueil, source `source-green-1024.png` |
+| `match_logos.py` | Rapproche les logos de clubs des équipes relevées |
+| `assets/logos/` | Un logo par club, nommé par identifiant UEFA |
 
 Le calculateur `~/Desktop/uefa-prize-money-2026-27.html` reste la source unique.
 Toute modification se fait là-bas, puis `python3 build.py` la reporte ici.
+
+## Logos de clubs
+
+Les 108 clubs engagés ont leur écusson, repris du dossier de logos et
+redimensionné à 96 pixels. Chaque fichier porte l'identifiant UEFA de son club,
+ce qui évite toute table de correspondance dans l'application.
+
+Pour reprendre les logos après un changement d'engagés, par exemple à
+l'intersaison :
+
+    python3 match_logos.py --dry   # contrôle des rapprochements
+    python3 match_logos.py         # copie et redimensionnement
+
+Le script signale les clubs sans logo. Les cas que la comparaison de noms ne
+résout pas se déclarent dans le dictionnaire `MANUEL`, en tête du script.
+
+## Changer l'icône de l'application
+
+Remplacer `icons/source-green-1024.png` par un carré de 1024 pixels, puis :
+
+    for s in 180 192 512; do
+      sips -s format png -z $s $s icons/source-green-1024.png --out icons/icon-$s.png
+    done
+    python3 build.py
+
+L'icône d'une application déjà installée sur l'iPhone ne change qu'après
+suppression et réinstallation depuis l'écran d'accueil.
 
 ## Données
 
