@@ -253,6 +253,67 @@
   .season-link .sl-txt{ flex:1; min-width:180px; }
   .season-link .btn{ flex:none; }
 
+
+  .source-line{
+    display:flex; align-items:center; gap:7px;
+    font-size:11.5px; color:var(--steel); margin:10px 0 0;
+  }
+  .source-line .dot{ width:7px; height:7px; border-radius:50%; background:var(--steel); flex:none; }
+  .source-line .dot.ok{ background:var(--ok); }
+  .source-line .dot.off{ background:var(--red); }
+
+  /* ---------- Sélecteur de journée ---------- */
+  .md-pills{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:14px; }
+  .md-pill{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--steel);
+    background:#fff; border:1px solid var(--hairline); border-radius:3px;
+    padding:5px 9px; cursor:pointer; min-width:36px;
+  }
+  .md-pill:hover{ background:var(--paper-2); }
+  .md-pill.complet{ color:var(--navy); border-color:var(--hairline-strong); }
+  .md-pill.partiel{ color:var(--gold); border-color:var(--gold-soft); }
+  .md-pill.ko{ border-style:dashed; border-color:var(--gold); color:var(--gold); }
+  .md-pill.qualif{ color:var(--steel); background:var(--paper); }
+  .md-pill.scup{ border-color:var(--ucl); color:var(--ucl); }
+  .h3-count{
+    font-family:'IBM Plex Sans', sans-serif; font-size:11px; font-weight:400; color:var(--steel);
+    margin-left:auto;
+  }
+  .md-line.avant .md-tag{ border-style:dashed; }
+  .md-line.avant .md-txt{ color:var(--steel); }
+  .md-line.socle{ border-bottom:1px solid var(--hairline-strong); }
+  .md-pill.active{ background:var(--navy); border-color:var(--navy); color:var(--paper); font-weight:600; }
+
+  /* ---------- Liste de matchs ---------- */
+  .date-head{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--steel);
+    margin:16px 0 6px; padding-bottom:4px; border-bottom:1px dashed var(--hairline);
+  }
+  .match-line{
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px;
+    padding:8px 4px; border-bottom:1px solid var(--hairline); font-size:13.5px;
+  }
+  .match-line .ml-team{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .match-line .ml-team.home{ text-align:right; }
+  .match-line .ml-team.away{ text-align:left; }
+  .match-line .ml-team.gagnant{ font-weight:600; }
+  .match-line .ml-score{
+    font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:13.5px;
+    background:var(--navy); color:var(--paper); border-radius:3px; padding:3px 9px; white-space:nowrap;
+  }
+  .match-line .ml-score .sep{ opacity:0.55; margin:0 2px; }
+  .match-line .ml-heure{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--steel);
+    border:1px solid var(--hairline-strong); border-radius:3px; padding:3px 8px; white-space:nowrap;
+  }
+  .match-line.a-venir .ml-team{ color:var(--steel); }
+  .match-line .ml-tab{ grid-column:1 / -1; text-align:center; font-size:11px; color:var(--steel); }
+
+  .md-line.ko .md-tag{ border-color:var(--gold); color:var(--gold); }
+  table.season td.pts{ font-weight:600; color:var(--navy); }
+
+  /* ---------- Provenance des données ---------- */
+
   /* ---------- Onglets ---------- */
   .main-col{ min-width:0; }
   .tabs{ display:flex; gap:4px; margin-bottom:16px; border-bottom:1px solid var(--hairline); }
@@ -491,8 +552,16 @@
       background:var(--navy); color:var(--paper);
       box-shadow:0 -2px 10px rgba(11,28,61,0.18);
     }
+    .match-line{ font-size:13px; gap:7px; padding:9px 2px; }
+    .match-line .ml-score{ font-size:13px; padding:3px 7px; }
+    .match-line .ml-heure{ font-size:11.5px; padding:3px 6px; }
+    .md-pill{ padding:7px 10px; font-size:12px; min-width:40px; }
+    .md-pills{ gap:6px; }
+    .source-line{ align-items:flex-start; font-size:11px; }
+    .source-line .dot{ margin-top:4px; }
+    .date-head{ margin-top:14px; }
     .tabs{ margin-bottom:12px; gap:2px; }
-    .tab{ flex:1; font-size:13px; padding:9px 6px 10px; }
+    .tab{ flex:1; font-size:12.5px; padding:9px 4px 10px; }
     .chips{ gap:6px; }
     .chip{ font-size:12px; padding:7px 11px 7px 6px; }
     table.season{ font-size:12px; }
@@ -562,10 +631,11 @@
   <div class="line">
     <strong>Montants provisoires</strong>, base de revenu brut 4,4 Md€, sujets à confirmation finale par l'UEFA.
     Hors périmètre : paiements de solidarité aux clubs non participants (Circular Letter n°72/2025) et distribution UEFA Women's Champions League / Youth League.
-    Aucune connexion automatique à UEFA.com : les résultats de phase de ligue sont embarqués manuellement d'après UEFA.com,
-    à jour de la <strong>journée 1 de Ligue des champions, 8-10 septembre 2026</strong>. Journée 1 d'Europa League le 16-17 septembre 2026,
-    de Conference League le 15 octobre 2026 : à saisir dans l'onglet « Saison &amp; évolution » dès qu'elles sont jouées.
-    Calcul 100% local, aucune donnée transmise à un serveur.
+    <strong>Résultats, classements et calendriers relevés automatiquement sur UEFA.com</strong> pour la saison 2026/27 :
+    qualifications, Supercoupe d'Europe, phase de ligue puis phase à élimination directe des trois compétitions.
+    Le relevé tourne côté serveur plusieurs fois par jour, la date du dernier relevé est indiquée dans chaque onglet.
+    Les résultats peuvent aussi être saisis à la main, ce qui dépanne hors ligne ou avant la mise à jour suivante.
+    Le calcul du prize money s'exécute entièrement dans le navigateur et aucune donnée saisie ne quitte l'appareil.
   </div>
 </footer>
 
@@ -630,7 +700,7 @@ const VP_VALUE_PER_PART = {
 
 /* ============================= STATE ============================= */
 
-let DB = { clubs: {}, selected: null, season: {}, view: 'clubs', seasonComp: 'UCL' };
+let DB = { clubs: {}, selected: null, season: {}, view: 'clubs', seasonComp: 'UCL', mdSel: {} };
 const STORAGE_KEY = 'uefa_pm_2026_27_clubs_v1';
 
 function uid(){ return Math.random().toString(36).slice(2,9); }
@@ -696,8 +766,9 @@ async function loadAll(){
       DB.clubs = parsed.clubs || {};
       DB.selected = parsed.selected || null;
       DB.season = parsed.season || {};
-      DB.view = parsed.view === 'season' ? 'season' : 'clubs';
+      DB.view = ['season','matches','table'].indexOf(parsed.view) >= 0 ? parsed.view : 'clubs';
       DB.seasonComp = LEAGUE_CONFIG[parsed.seasonComp] ? parsed.seasonComp : 'UCL';
+      DB.mdSel = parsed.mdSel || {};
     }
   }catch(e){ /* no data yet */ }
   mergeSeasonDefaults();
@@ -710,7 +781,8 @@ async function loadAll(){
 async function saveAll(){
   try{
     await storageSet(STORAGE_KEY, JSON.stringify({
-      clubs:DB.clubs, selected:DB.selected, season:DB.season, view:DB.view, seasonComp:DB.seasonComp
+      clubs:DB.clubs, selected:DB.selected, season:DB.season,
+      view:DB.view, seasonComp:DB.seasonComp, mdSel:DB.mdSel
     }));
   }catch(e){ console.error('Erreur de sauvegarde', e); }
 }
@@ -1122,6 +1194,197 @@ const SEASON_RESULTS = {
   UECL: {},
 };
 
+
+/* ============================= DONNÉES OFFICIELLES UEFA.COM ============================= */
+
+/*
+  Les fichiers data/<comp>.json sont produits côté serveur par fetch_uefa.py, que
+  GitHub Actions relance régulièrement. L'API d'UEFA.com n'autorise que son propre
+  site à l'appeler depuis un navigateur : l'application lit donc des fichiers de sa
+  propre origine, ce qui la laisse aussi fonctionner hors ligne.
+*/
+
+const LIVE = {};        // comp -> contenu de data/<comp>.json
+const LIVE_STATE = {};  // comp -> 'chargement' | 'ok' | 'absent'
+const MD_TOTAL_DEFAUT = { UCL:8, UEL:8, UECL:6 };
+
+function dataUrl(comp){ return 'data/' + comp.toLowerCase() + '.json'; }
+
+async function loadLive(comp){
+  if(LIVE[comp] || LIVE_STATE[comp] === 'chargement') return LIVE[comp];
+  LIVE_STATE[comp] = 'chargement';
+  try{
+    const res = await fetch(dataUrl(comp), { cache:'no-cache' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    LIVE[comp] = await res.json();
+    LIVE_STATE[comp] = 'ok';
+    applyLive(comp);
+  }catch(e){
+    LIVE_STATE[comp] = 'absent';
+  }
+  return LIVE[comp];
+}
+
+// Les résultats officiels remplacent la journée correspondante du moteur.
+// Une journée que l'API ne connaît pas encore garde ce qui a été saisi à la main.
+function applyLive(comp){
+  const p = LIVE[comp];
+  if(!p || !p.phaseDeLigue) return;
+  DB.season[comp] = DB.season[comp] || {};
+  let touche = false;
+  Object.keys(p.phaseDeLigue).forEach(md => {
+    const joues = (p.phaseDeLigue[md] || []).filter(m => m.statut === 'FINISHED' && m.hg !== undefined && m.ag !== undefined);
+    if(joues.length){
+      DB.season[comp][md] = joues.map(m => [m.h.n, m.hg, m.ag, m.a.n]);
+      touche = true;
+    }
+  });
+  if(touche) saveAll();
+}
+
+function liveTeams(comp){
+  const p = LIVE[comp];
+  const out = [];
+  if(!p) return out;
+  (p.classement || []).forEach(r => { if(r.equipe) out.push(r.equipe); });
+  Object.keys(p.phaseDeLigue || {}).forEach(md =>
+    (p.phaseDeLigue[md] || []).forEach(m => { if(m.h) out.push(m.h); if(m.a) out.push(m.a); }));
+  (p.phaseFinale || []).forEach(r =>
+    (r.matchs || []).forEach(m => { if(m.h) out.push(m.h); if(m.a) out.push(m.a); }));
+  return out;
+}
+
+// Supercoupe d'Europe : un match unique, chargé à part.
+const SUPERCOUPE = { match:null, etat:null };
+const SUPERCOUPE_FINALISTE = 4000000;
+const SUPERCOUPE_VAINQUEUR = 1000000;
+
+async function loadSupercoupe(){
+  if(SUPERCOUPE.match || SUPERCOUPE.etat === 'chargement') return SUPERCOUPE.match;
+  SUPERCOUPE.etat = 'chargement';
+  try{
+    const res = await fetch('data/supercoupe.json', { cache:'no-cache' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    SUPERCOUPE.match = await res.json();
+    SUPERCOUPE.etat = 'ok';
+  }catch(e){ SUPERCOUPE.etat = 'absent'; }
+  return SUPERCOUPE.match;
+}
+
+// Parcours d'un club en Supercoupe : finaliste, et vainqueur le cas échéant.
+function supercoupeFor(teamName){
+  const m = SUPERCOUPE.match;
+  if(!m || m.statut !== 'FINISHED') return null;
+  const dom = m.h && m.h.n === teamName;
+  const ext = m.a && m.a.n === teamName;
+  if(!dom && !ext) return null;
+  const moi = dom ? m.h : m.a, autre = dom ? m.a : m.h;
+  const gagne = !!(m.vainqueur && moi.id === m.vainqueur);
+  return {
+    vainqueur: gagne,
+    adversaire: autre.n,
+    score: (dom ? m.hg + '-' + m.ag : m.ag + '-' + m.hg),
+    date: m.date,
+    montant: SUPERCOUPE_FINALISTE + (gagne ? SUPERCOUPE_VAINQUEUR : 0)
+  };
+}
+
+function liveQualif(comp){
+  const p = LIVE[comp];
+  return (p && p.qualifications) ? p.qualifications : {};
+}
+
+// Tours de qualification réellement disputés par un club, dans l'ordre.
+function qualifPath(comp, teamName){
+  const q = liveQualif(comp);
+  const tours = ROUND_ORDER.filter(r =>
+    (q[r] || []).some(m => (m.h && m.h.n === teamName) || (m.a && m.a.n === teamName)));
+  return tours.length ? tours : null;
+}
+
+// Un club peut être reversé d'une compétition à l'autre en cours de
+// qualifications : on relève son parcours dans les trois épreuves.
+function qualifPathAll(teamName){
+  const out = [];
+  ['UCL','UEL','UECL'].forEach(c => {
+    const tours = qualifPath(c, teamName);
+    if(tours) out.push({ comp:c, tours });
+  });
+  return out;
+}
+
+/*
+  Primes de qualification, mêmes règles que la fiche club : une indemnité par
+  tour disputé, sauf le troisième tour de qualification perdu en Ligue des
+  champions et les barrages gagnés en Ligue des champions ou en Europa League.
+  La prime d'élimination ne revient qu'aux clubs qui n'atteignent aucune phase
+  de ligue : un club reversé d'une épreuve à l'autre n'y a pas droit.
+*/
+function qualifEarnings(comp, tours, qualifie, primeElimination){
+  const lignes = [];
+  let total = 0;
+  tours.forEach((r, i) => {
+    const dernier = i === tours.length - 1;
+    let fee = ROUND_FEE;
+    if(qualifie && r === 'PO' && (comp === 'UCL' || comp === 'UEL')) fee = 0;
+    if(!qualifie && dernier && comp === 'UCL' && r === 'Q3') fee = 0;
+    if(fee){
+      lignes.push({ label:'Indemnité de tour — ' + ROUND_LABEL_FULL[r] + ' — ' + comp, montant:fee });
+      total += fee;
+    }
+  });
+  if(!qualifie && primeElimination){
+    const dernier = tours[tours.length - 1];
+    const bonus = ELIM_BONUS[dernier] || 0;
+    if(bonus){
+      lignes.push({ label:"Prime d'élimination — " + ROUND_LABEL_FULL[dernier] + ' — ' + comp, montant:bonus });
+      total += bonus;
+    }
+  }
+  return { lignes, total, tours };
+}
+
+// Parcours complet de qualification d'un club qui atteint la phase de ligue de comp.
+function qualifTotalFor(comp, teamName){
+  const segments = qualifPathAll(teamName);
+  if(!segments.length) return null;
+  const lignes = [];
+  let total = 0;
+  segments.forEach(seg => {
+    const r = qualifEarnings(seg.comp, seg.tours, seg.comp === comp, false);
+    r.lignes.forEach(l => lignes.push(l));
+    total += r.total;
+  });
+  return { lignes, total, segments, tours: segments.reduce((a, x) => a.concat(x.tours.map(t => x.comp + ' ' + t)), []) };
+}
+
+function liveKnockout(comp){
+  const p = LIVE[comp];
+  return (p && p.phaseFinale) ? p.phaseFinale : [];
+}
+
+function liveMatchdays(comp){
+  const p = LIVE[comp];
+  if(!p || !p.phaseDeLigue) return [];
+  return Object.keys(p.phaseDeLigue).map(Number).sort((a,b) => a-b);
+}
+
+function mdTotal(comp){
+  const n = liveMatchdays(comp).length;
+  return n || MD_TOTAL_DEFAUT[comp] || 8;
+}
+
+function liveUpdatedLabel(comp){
+  const p = LIVE[comp];
+  if(!p || !p.maj) return null;
+  const d = new Date(p.maj);
+  if(isNaN(d)) return p.maj;
+  return d.toLocaleString('fr-FR', { day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' });
+}
+
+// Libellés courts des tours de phase finale, pour la courbe d'évolution.
+const KO_SHORT = { barrages:'BR', r16:'8es', qf:'QF', sf:'SF', final:'F' };
+
 // Raccourcis courants qui ne se déduisent pas d'une simple comparaison de chaînes.
 const NAME_ALIASES = {
   psg:'Paris Saint-Germain', paris:'Paris Saint-Germain', parissg:'Paris Saint-Germain',
@@ -1148,6 +1411,7 @@ function seasonTeams(comp){
   const set = new Set();
   const src = (DB.season && DB.season[comp]) || {};
   Object.keys(src).forEach(md => (src[md]||[]).forEach(m => { set.add(m[0]); set.add(m[3]); }));
+  liveTeams(comp).forEach(t => { if(t && t.n) set.add(t.n); });
   return [...set];
 }
 
@@ -1165,6 +1429,11 @@ function resolveTeamName(name, comp){
       hit = teams.find(t => normName(t) === normName(alias));
       if(hit) return { team:hit, comp:c };
     }
+    // Nom officiel complet et code à trois lettres des données UEFA.
+    const cible = alias ? normName(alias) : n;
+    const parLive = liveTeams(c).find(t =>
+      normName(t.full) === cible || normName(t.n) === cible || normName(t.code) === cible);
+    if(parLive) return { team:parLive.n, comp:c };
     const partial = teams.filter(t => { const tn = normName(t); return tn.includes(n) || n.includes(tn); });
     if(partial.length === 1) return { team:partial[0], comp:c };
   }
@@ -1192,11 +1461,13 @@ function compareTeams(a, b){
 }
 
 /*
-  Gains cumulés d'une compétition, journée par journée.
-  Acquis   = starting fee + bonus de victoires et de nuls déjà disputés.
-  Projeté  = acquis + ranking bonus et bonus de classement au rang provisoire.
-  Le ranking bonus n'est dû qu'au terme de la phase de ligue : il ne figure
-  jamais dans les gains acquis, seulement dans la projection.
+  Gains d'une compétition, journée par journée puis tour par tour.
+
+  Acquis   = starting fee, bonus de résultats de la phase de ligue, puis, une
+             fois la phase de ligue terminée, ranking bonus et bonus de
+             classement, enfin une prime par tour de phase finale disputé.
+  Projeté  = acquis augmenté du ranking bonus estimé au rang provisoire tant
+             que la phase de ligue n'est pas achevée.
 */
 function computeSeason(comp){
   const cfg = LEAGUE_CONFIG[comp];
@@ -1204,10 +1475,22 @@ function computeSeason(comp){
   const teams = new Map();
   const get = (name) => {
     if(!teams.has(name)){
-      teams.set(name, { name, played:0, w:0, d:0, l:0, gf:0, ga:0, awayW:0, awayGf:0, pts:0, byMd:{}, cum:{} });
+      teams.set(name, { name, played:0, w:0, d:0, l:0, gf:0, ga:0, awayW:0, awayGf:0, pts:0,
+                        byMd:{}, cum:{}, ko:[], timeline:[] });
     }
     return teams.get(name);
   };
+
+  // Les 36 engagés figurent au tableau dès avant le coup d'envoi : ils ont déjà
+  // touché leur starting fee et, pour certains, des primes de qualification.
+  const p = LIVE[comp];
+  if(p){
+    (p.classement || []).forEach(r => { if(r.equipe && r.equipe.n) get(r.equipe.n); });
+    if(!(p.classement || []).length){
+      Object.keys(p.phaseDeLigue || {}).forEach(md =>
+        (p.phaseDeLigue[md] || []).forEach(m => { if(m.h) get(m.h.n); if(m.a) get(m.a.n); }));
+    }
+  }
 
   mds.forEach(md => {
     (DB.season[comp][md] || []).forEach(m => {
@@ -1228,25 +1511,91 @@ function computeSeason(comp){
 
   const start = cfg.startingDown + cfg.startingBalance;
   teams.forEach(t => {
-    let acc = start;
+    let acc = 0;
+
+    // Tours de qualification franchis avant la phase de ligue, y compris ceux
+    // disputés dans une autre épreuve avant reversement.
+    t.qualif = qualifTotalFor(comp, t.name);
+    if(t.qualif && t.qualif.total){
+      acc += t.qualif.total;
+      t.timeline.push({ lab:'Qual.', v:acc });
+    }
+
+    // Supercoupe d'Europe, disputée avant la phase de ligue.
+    t.supercoupe = supercoupeFor(t.name);
+    if(t.supercoupe){
+      acc += t.supercoupe.montant;
+      t.timeline.push({ lab:'S.Coupe', v:acc });
+    }
+
+    t.avantLigue = acc;
+    acc += start;
+    t.base = acc;
+    t.timeline.push({ lab:'J0', v:acc });
     mds.forEach(md => {
       const e = t.byMd[md];
       if(e) acc += (e.res === 'V' ? cfg.winBonus : e.res === 'N' ? cfg.drawBonus : 0);
       t.cum[md] = acc;
+      t.timeline.push({ lab:'J' + md, v:acc });
     });
+    t.ligue = acc;
     t.earned = acc;
   });
 
+  // Classement provisoire, départages UEFA de la phase de ligue.
   const table = [...teams.values()].sort(compareTeams);
+  const total = mdTotal(comp);
+  const ligueTerminee = table.length > 0 && table.every(t => t.played >= total);
+
   table.forEach((t, i) => {
     t.rank = i + 1;
     t.parts = 37 - t.rank;
     t.rankingBonus = t.parts * cfg.valuePerPart;
     t.placementBonus = t.rank <= 8 ? cfg.top8 : (t.rank <= 16 ? cfg.top9_16 : 0);
-    t.projected = t.earned + t.rankingBonus + t.placementBonus;
     t.zone = t.rank <= 8 ? 'top8' : (t.rank <= 24 ? 'po' : 'out');
   });
-  return { comp, cfg, mds, table, start };
+
+  // Le ranking bonus n'est dû qu'au terme de la phase de ligue.
+  if(ligueTerminee){
+    table.forEach(t => {
+      t.earned += t.rankingBonus + t.placementBonus;
+      t.timeline.push({ lab:'Rang', v:t.earned });
+    });
+  }
+
+  // Phase à élimination directe : une prime par tour disputé.
+  const byName = new Map(table.map(t => [t.name, t]));
+  liveKnockout(comp).forEach(r => {
+    const montant = cfg.ko[r.cle] || 0;
+    const vus = new Map();
+    (r.matchs || []).forEach(m => {
+      [m.h, m.a].forEach(x => { if(x && x.n) vus.set(x.n, x); });
+    });
+    vus.forEach((x, nom) => {
+      const t = byName.get(nom);
+      if(!t) return;
+      t.ko.push({ cle:r.cle, nom:r.nom, montant });
+      t.earned += montant;
+      t.timeline.push({ lab:KO_SHORT[r.cle] || r.cle, v:t.earned });
+    });
+    if(r.cle === 'final'){
+      (r.matchs || []).forEach(m => {
+        if(!m.vainqueur) return;
+        const w = [m.h, m.a].find(x => x && x.id === m.vainqueur);
+        const t = w && byName.get(w.n);
+        if(!t) return;
+        t.ko.push({ cle:'winner', nom:'Bonus vainqueur', montant:cfg.ko.winner });
+        t.earned += cfg.ko.winner;
+        t.timeline.push({ lab:'Vainq.', v:t.earned });
+      });
+    }
+  });
+
+  table.forEach(t => {
+    t.projected = ligueTerminee ? t.earned : (t.earned + t.rankingBonus + t.placementBonus);
+  });
+
+  return { comp, cfg, mds, table, start, ligueTerminee, total, demarree: mds.length > 0 };
 }
 
 /* ---------- Saisie et import d'une journée ---------- */
@@ -1392,35 +1741,64 @@ function syncClubFromSeason(){
   saveAll(); render();
 }
 
-/* ============================= RENDU : VUE SAISON ============================= */
+/* ============================= RENDU : VUES DE SAISON ============================= */
+
+const VIEWS = [
+  ['clubs',   'Fiche club'],
+  ['matches', 'Matchs'],
+  ['table',   'Classement'],
+  ['season',  'Gains'],
+];
 
 function setView(v){
   DB.view = v;
   clearStatus();
   saveAll();
   render();
+  ensureLive();
 }
 
 function renderTabs(){
   const el = document.getElementById('tabs');
   if(!el) return;
-  const v = DB.view === 'season' ? 'season' : 'clubs';
-  el.innerHTML = `
-    <button class="tab ${v==='clubs'?'active':''}" onclick="setView('clubs')">Fiche club</button>
-    <button class="tab ${v==='season'?'active':''}" onclick="setView('season')">Saison &amp; évolution</button>
-  `;
+  const cur = VIEWS.some(v => v[0] === DB.view) ? DB.view : 'clubs';
+  el.innerHTML = VIEWS.map(([v, label]) =>
+    `<button class="tab ${cur===v?'active':''}" onclick="setView('${v}')">${label}</button>`).join('');
+}
+
+function updateSeasonComp(c){
+  DB.seasonComp = c;
+  saveAll();
+  render();
+  ensureLive();
+}
+
+// Charge la compétition affichée si ce n'est pas déjà fait, puis redessine.
+function ensureLive(){
+  const comp = DB.seasonComp || 'UCL';
+  if(LIVE[comp] || LIVE_STATE[comp] === 'chargement') return;
+  loadLive(comp).then(p => { if(p) render(); });
 }
 
 function compPickerHtml(){
   return ['UCL','UEL','UECL'].map(c => {
-    const n = seasonMatchdays(c).length;
+    const joues = seasonMatchdays(c).length;
     return `<button class="chip ${DB.seasonComp===c?'active':''}" onclick="updateSeasonComp('${c}')">
-      <span class="comp-tag ${c}">${c}</span> ${COMP_NAME[c]} <span class="chip-count">${n ? n + ' J' : '—'}</span>
+      <span class="comp-tag ${c}">${c}</span> ${COMP_NAME[c]} <span class="chip-count">${joues ? joues + ' J' : '—'}</span>
     </button>`;
   }).join('');
 }
 
-function updateSeasonComp(c){ DB.seasonComp = c; saveAll(); render(); }
+function sourceLineHtml(comp){
+  const maj = liveUpdatedLabel(comp);
+  if(maj){
+    return `<p class="source-line"><span class="dot ok"></span> Résultats et classement officiels UEFA.com, relevés le ${maj}.</p>`;
+  }
+  if(LIVE_STATE[comp] === 'chargement'){
+    return `<p class="source-line"><span class="dot"></span> Chargement des données UEFA.com…</p>`;
+  }
+  return `<p class="source-line"><span class="dot off"></span> Données UEFA.com indisponibles hors ligne. Affichage des résultats enregistrés sur l'appareil.</p>`;
+}
 
 function moneyShort(n){
   if(!n) return '0';
@@ -1428,17 +1806,219 @@ function moneyShort(n){
   return (m >= 10 ? m.toFixed(1) : m.toFixed(2)).replace('.', ',') + ' M';
 }
 
-// Courbe des gains cumulés du club, du starting fee à la dernière journée.
-function evolutionChart(team, season){
-  const mds = season.mds;
-  if(!mds.length) return '';
-  const steps = [{ lab:'J0', v:season.start }]
-    .concat(mds.map(md => ({ lab:'J' + md, v:team.cum[md] === undefined ? season.start : team.cum[md] })));
+const JOURS = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+const MOIS = ['janv.','févr.','mars','avril','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+
+function dateLabel(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T12:00:00Z');
+  if(isNaN(d)) return iso;
+  return JOURS[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MOIS[d.getUTCMonth()];
+}
+
+/* ---------- Vue Matchs ---------- */
+
+// Tours de qualification disponibles pour une compétition, dans l'ordre.
+function qualifRounds(comp){
+  const q = liveQualif(comp);
+  return ROUND_ORDER.filter(r => (q[r] || []).length);
+}
+
+function selectedMd(comp){
+  const sel = (DB.mdSel || {})[comp];
+  const mds = liveMatchdays(comp);
+  const dispo = mds.length ? mds : seasonMatchdays(comp);
+  const ko = liveKnockout(comp);
+  if(sel){
+    if(sel === 'sc' && SUPERCOUPE.match) return sel;
+    if(String(sel).indexOf('q:') === 0 && qualifRounds(comp).indexOf(String(sel).slice(2)) >= 0) return sel;
+    if(String(sel).indexOf('ko:') === 0 && ko.some(r => 'ko:' + r.cle === sel)) return sel;
+    if(dispo.indexOf(Number(sel)) >= 0) return String(sel);
+  }
+  const joues = seasonMatchdays(comp);
+  if(ko.length) return 'ko:' + ko[ko.length-1].cle;
+  if(joues.length) return String(joues[joues.length-1]);
+  if(dispo.length) return String(dispo[0]);
+  const q = qualifRounds(comp);
+  return q.length ? 'q:' + q[q.length-1] : null;
+}
+
+function setMd(comp, key){
+  DB.mdSel = DB.mdSel || {};
+  DB.mdSel[comp] = key;
+  saveAll();
+  render();
+}
+
+function matchLineHtml(m){
+  const joue = m.hg !== undefined && m.ag !== undefined;
+  const gagnantDom = joue && m.hg > m.ag;
+  const gagnantExt = joue && m.ag > m.hg;
+  const centre = joue
+    ? `<span class="ml-score">${m.hg}<span class="sep">-</span>${m.ag}</span>`
+    : `<span class="ml-heure">${m.heure || '—'}</span>`;
+  const tab = m.tab ? `<span class="ml-tab">tab ${m.tab[0]}-${m.tab[1]}</span>` : '';
+  return `
+    <div class="match-line ${joue ? '' : 'a-venir'}">
+      <span class="ml-team home ${gagnantDom?'gagnant':''}">${escapeHtml(m.h ? m.h.n : '?')}</span>
+      ${centre}
+      <span class="ml-team away ${gagnantExt?'gagnant':''}">${escapeHtml(m.a ? m.a.n : '?')}</span>
+      ${tab}
+    </div>`;
+}
+
+function renderMatchesView(main){
+  const comp = DB.seasonComp || 'UCL';
+  const p = LIVE[comp];
+  const mds = liveMatchdays(comp);
+  const ko = liveKnockout(comp);
+  const sel = selectedMd(comp);
+
+  let titre = '', matchs = [];
+  if(sel === 'sc'){
+    titre = "Supercoupe d'Europe";
+    matchs = SUPERCOUPE.match ? [SUPERCOUPE.match] : [];
+  } else if(sel && String(sel).indexOf('q:') === 0){
+    const r = String(sel).slice(2);
+    titre = ROUND_LABEL_FULL[r] || r;
+    matchs = liveQualif(comp)[r] || [];
+  } else if(sel && String(sel).indexOf('ko:') === 0){
+    const r = ko.find(x => 'ko:' + x.cle === sel);
+    titre = r ? r.nom : '';
+    matchs = r ? r.matchs : [];
+  } else if(sel){
+    titre = 'Journée ' + sel;
+    if(p && p.phaseDeLigue && p.phaseDeLigue[sel]) matchs = p.phaseDeLigue[sel];
+    else matchs = (DB.season[comp][sel] || []).map(r => ({ h:{n:r[0]}, a:{n:r[3]}, hg:r[1], ag:r[2], statut:'FINISHED' }));
+  }
+
+  const parDate = {};
+  matchs.forEach(m => { (parDate[m.date || ''] = parDate[m.date || ''] || []).push(m); });
+  const dates = Object.keys(parDate).sort();
+
+  const chips = []
+    .concat(qualifRounds(comp).map(r =>
+      `<button class="md-pill qualif ${sel==='q:'+r?'active':''}" onclick="setMd('${comp}','q:${r}')" title="${escapeHtml(ROUND_LABEL_FULL[r])}">${r}</button>`))
+    .concat(SUPERCOUPE.match && comp === 'UCL'
+      ? [`<button class="md-pill scup ${sel==='sc'?'active':''}" onclick="setMd('${comp}','sc')" title="Supercoupe d'Europe">SC</button>`]
+      : [])
+    .concat(mds.map(md => {
+      const joues = ((p && p.phaseDeLigue && p.phaseDeLigue[String(md)]) || []).filter(m => m.statut === 'FINISHED').length;
+      const totalMatchs = ((p && p.phaseDeLigue && p.phaseDeLigue[String(md)]) || []).length;
+      const etat = totalMatchs && joues === totalMatchs ? 'complet' : (joues ? 'partiel' : 'a-venir');
+      return `<button class="md-pill ${String(sel)===String(md)?'active':''} ${etat}" onclick="setMd('${comp}','${md}')">J${md}</button>`;
+    }))
+    .concat(ko.map(r => `<button class="md-pill ko ${sel==='ko:'+r.cle?'active':''}" onclick="setMd('${comp}','ko:${r.cle}')">${escapeHtml(KO_SHORT[r.cle] || r.nom)}</button>`))
+    .join('');
+
+  main.innerHTML = `
+    <div class="panel">
+      <h3><span class="num">A</span> Compétition</h3>
+      <div class="chips">${compPickerHtml()}</div>
+      ${sourceLineHtml(comp)}
+    </div>
+
+    ${mds.length || matchs.length || qualifRounds(comp).length ? `
+    <div class="panel">
+      <h3><span class="num">B</span> ${escapeHtml(titre || 'Matchs')}
+        ${matchs.length ? `<span class="h3-count">${matchs.length} match${matchs.length>1?'s':''}</span>` : ''}</h3>
+      <div class="md-pills">${chips}</div>
+      ${dates.length ? dates.map(d => `
+        ${d ? `<div class="date-head">${dateLabel(d)}</div>` : ''}
+        ${parDate[d].map(matchLineHtml).join('')}
+      `).join('') : `<p class="hint" style="margin:12px 0 0;">Aucun match pour cette sélection.</p>`}
+    </div>` : `
+    <div class="panel">
+      <p class="hint" style="margin:0;">Calendrier indisponible pour cette compétition.</p>
+    </div>`}
+  `;
+  setMobileTotal(null);
+}
+
+/* ---------- Vue Classement ---------- */
+
+function standingsRows(comp){
+  const s = computeSeason(comp);
+  const live = (LIVE[comp] && LIVE[comp].classement && LIVE[comp].classement.length) ? LIVE[comp].classement : null;
+  if(live){
+    return { source:'uefa', season:s, rows: live.map(r => ({
+      rang: r.rang, nom: r.equipe.n, full: r.equipe.full,
+      j:r.j, g:r.g, n:r.n, p:r.p, bp:r.bp, bc:r.bc, diff:r.diff, pts:r.pts,
+      t: s.table.find(x => x.name === r.equipe.n)
+    })) };
+  }
+  return { source:'calcul', season:s, rows: s.table.map(t => ({
+    rang:t.rank, nom:t.name, full:t.name,
+    j:t.played, g:t.w, n:t.d, p:t.l, bp:t.gf, bc:t.ga, diff:t.gf - t.ga, pts:t.pts, t
+  })) };
+}
+
+function zoneOf(rang){ return rang <= 8 ? 'top8' : (rang <= 24 ? 'po' : 'out'); }
+
+function renderTableView(main){
+  const comp = DB.seasonComp || 'UCL';
+  const { source, season, rows } = standingsRows(comp);
+  const club = currentClub();
+  const mine = club ? (resolveTeamName(club.name, comp) || {}).team : null;
+
+  main.innerHTML = `
+    <div class="panel">
+      <h3><span class="num">A</span> Compétition</h3>
+      <div class="chips">${compPickerHtml()}</div>
+      ${sourceLineHtml(comp)}
+    </div>
+
+    <div class="panel">
+      <h3><span class="num">B</span> Classement ${COMP_NAME[comp]}</h3>
+      <p class="hint">
+        ${source === 'uefa'
+          ? 'Classement officiel UEFA.com. La colonne des gains vient du calculateur.'
+          : 'Classement recalculé à partir des résultats enregistrés, départages UEFA.'}
+        ${season.ligueTerminee ? ' Phase de ligue terminée : le ranking bonus est acquis.' : ''}
+      </p>
+      <div class="table-scroll">
+        <table class="season">
+          <thead><tr>
+            <th class="nb">#</th><th>Club</th>
+            <th class="nb">J</th><th class="nb">G</th><th class="nb">N</th><th class="nb">P</th>
+            <th class="nb">BP</th><th class="nb">BC</th><th class="nb">Diff</th><th class="nb">Pts</th>
+            <th class="nb">Gains acquis</th>
+          </tr></thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr class="${r.nom===mine?'me':''} zone-${zoneOf(r.rang)}">
+                <td class="nb rank">${r.rang}</td>
+                <td class="team" title="${escapeHtml(r.full || r.nom)}">${escapeHtml(r.nom)}</td>
+                <td class="nb">${r.j}</td><td class="nb">${r.g}</td><td class="nb">${r.n}</td><td class="nb">${r.p}</td>
+                <td class="nb">${r.bp}</td><td class="nb">${r.bc}</td>
+                <td class="nb">${r.diff > 0 ? '+' : ''}${r.diff}</td>
+                <td class="nb pts">${r.pts}</td>
+                <td class="nb money">${r.t ? formatEUR(r.t.earned) : '—'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="zone-legend">
+        <span><i class="z top8"></i> 1-8 : qualifiés directs pour les 8es</span>
+        <span><i class="z po"></i> 9-24 : barrages / play-offs de phase finale</span>
+        <span><i class="z out"></i> 25-36 : éliminés</span>
+      </div>
+    </div>
+  `;
+  setMobileTotal(null);
+}
+
+/* ---------- Vue Gains ---------- */
+
+// Courbe des gains cumulés, du starting fee au dernier tour disputé.
+function evolutionChart(team){
+  const steps = team.timeline || [];
+  if(steps.length < 2) return '';
   const W = 640, H = 200, padL = 62, padR = 16, padT = 16, padB = 28;
-  const lastMd = mds[mds.length - 1];
-  const maxV = Math.max(season.start * 1.02, ...season.table.map(t => t.cum[lastMd] || season.start));
-  const minV = season.start;
-  const x = i => padL + (steps.length === 1 ? 0 : i * (W - padL - padR) / (steps.length - 1));
+  const vals = steps.map(s => s.v);
+  const minV = Math.min.apply(null, vals);
+  const maxV = Math.max(Math.max.apply(null, vals), minV * 1.02);
+  const x = i => padL + i * (W - padL - padR) / (steps.length - 1);
   const y = v => padT + (H - padT - padB) * (1 - (v - minV) / Math.max(1, maxV - minV));
   const pts = steps.map((st, i) => [x(i), y(st.v)]);
   const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
@@ -1448,14 +2028,15 @@ function evolutionChart(team, season){
     return `<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="rgba(11,28,61,0.12)" stroke-width="1"/>
             <text x="${padL-8}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#5C6470" font-family="IBM Plex Mono, monospace">${moneyShort(v)}€</text>`;
   }).join('');
+  const pas = Math.ceil(steps.length / 12);
   return `
     <svg class="evo-chart" viewBox="0 0 ${W} ${H}" role="img"
-         aria-label="Gains cumulés de ${escapeHtml(team.name)} journée par journée">
+         aria-label="Gains cumulés de ${escapeHtml(team.name)}">
       ${grid}
       <path d="${area}" fill="rgba(169,126,30,0.14)"/>
       <path d="${line}" fill="none" stroke="#A97E1E" stroke-width="2" stroke-linejoin="round"/>
       ${pts.map((p, i) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="#fff" stroke="#A97E1E" stroke-width="2"/>
-        <text x="${p[0].toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="10" fill="#5C6470" font-family="IBM Plex Mono, monospace">${steps[i].lab}</text>`).join('')}
+        ${i % pas === 0 || i === pts.length-1 ? `<text x="${p[0].toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="10" fill="#5C6470" font-family="IBM Plex Mono, monospace">${steps[i].lab}</text>` : ''}`).join('')}
     </svg>`;
 }
 
@@ -1467,19 +2048,19 @@ function renderSeasonView(main){
 
   const lastMd = s.mds.length ? s.mds[s.mds.length-1] : null;
   const prevMd = s.mds.length > 1 ? s.mds[s.mds.length-2] : null;
+  const projLabel = s.ligueTerminee ? 'Total acquis' : 'Projection fin de phase';
 
   const rows = s.table.map(t => {
-    const gain = lastMd ? (t.cum[lastMd] - (prevMd ? t.cum[prevMd] : s.start)) : 0;
+    const gain = lastMd ? (t.cum[lastMd] - (prevMd ? t.cum[prevMd] : t.base)) : 0;
     return `
     <tr class="${t.name===mine?'me':''} zone-${t.zone}">
       <td class="nb rank">${t.rank}</td>
       <td class="team">${escapeHtml(t.name)}</td>
       <td class="nb">${t.played}</td>
       <td class="nb">${t.pts}</td>
-      <td class="nb">${t.gf - t.ga > 0 ? '+' : ''}${t.gf - t.ga}</td>
       <td class="nb money">${formatEUR(t.earned)}</td>
       <td class="nb delta">${gain ? '+' + moneyShort(gain) + '€' : '—'}</td>
-      <td class="nb money proj">${formatEUR(t.projected)}</td>
+      <td class="nb money proj">${s.demarree ? formatEUR(t.projected) : '—'}</td>
     </tr>`;
   }).join('');
 
@@ -1496,31 +2077,32 @@ function renderSeasonView(main){
       }).join('')}
     </tr>`).join('');
 
-  const savedMds = ['UCL','UEL','UECL'].flatMap(c => seasonMatchdays(c).map(md => ({c, md})));
+  const savedMds = ['UCL','UEL','UECL'].reduce((acc, c) => acc.concat(seasonMatchdays(c).map(md => ({c, md}))), []);
 
   main.innerHTML = `
     <div class="panel">
       <h3><span class="num">A</span> Compétition</h3>
       <div class="chips">${compPickerHtml()}</div>
-      <p class="hint" style="margin-top:12px;">
+      ${sourceLineHtml(comp)}
+      <p class="hint" style="margin-top:10px;">
         ${s.mds.length
-          ? `Journées enregistrées : ${s.mds.map(md => 'J' + md).join(', ')}. Dernière journée prise en compte : J${lastMd}${MD_DATES[comp] && MD_DATES[comp][lastMd] ? ', ' + MD_DATES[comp][lastMd] : ''}. ${s.table.length} clubs.`
-          : `Aucun résultat enregistré pour cette compétition. Journée 1 prévue le ${(MD_DATES[comp]||{})[1] || 'à confirmer'}.`}
+          ? `Journées prises en compte : ${s.mds.map(md => 'J' + md).join(', ')} sur ${s.total}. ${s.table.length} clubs.`
+          : `Phase de ligue à venir, journée 1 le ${(MD_DATES[comp]||{})[1] || 'à confirmer'}. Les montants ci-dessous sont le starting fee et les primes de qualification déjà acquises.`}
       </p>
     </div>
 
-    ${s.mds.length ? `
+    ${s.table.length ? `
     <div class="panel">
-      <h3><span class="num">B</span> Classement et gains ${COMP_NAME[comp]}</h3>
+      <h3><span class="num">B</span> Gains ${COMP_NAME[comp]}</h3>
       <p class="hint">
-        <strong>Acquis</strong> : starting fee et bonus de résultats déjà engrangés.
-        <strong>Projection</strong> : acquis plus ranking bonus et bonus de classement au rang provisoire, dus seulement au terme de la phase de ligue.
+        <strong>Acquis</strong> : starting fee, bonus de résultats${s.ligueTerminee ? ', ranking bonus et bonus de classement' : ''} et primes de tours de phase finale disputés.
+        ${s.ligueTerminee ? '' : '<strong>Projection</strong> : acquis plus ranking bonus au rang provisoire, dû seulement au terme de la phase de ligue.'}
       </p>
       <div class="table-scroll">
         <table class="season">
           <thead><tr>
-            <th class="nb">#</th><th>Club</th><th class="nb">J</th><th class="nb">Pts</th><th class="nb">Diff</th>
-            <th class="nb">Gains acquis</th><th class="nb">Dont J${lastMd}</th><th class="nb">Projection fin de phase</th>
+            <th class="nb">#</th><th>Club</th><th class="nb">J</th><th class="nb">Pts</th>
+            <th class="nb">Gains acquis</th><th class="nb">${lastMd ? 'Dont J' + lastMd : 'Variation'}</th><th class="nb">${projLabel}</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -1532,30 +2114,51 @@ function renderSeasonView(main){
       </div>
     </div>
 
+    ${s.demarree ? `
     <div class="panel">
       <h3><span class="num">C</span> Évolution des gains cumulés</h3>
-      <p class="hint">Montant acquis au terme de chaque journée, résultat du club à cette journée en préfixe.</p>
+      <p class="hint">Montant acquis au terme de chaque journée, résultat du club en préfixe.</p>
       <div class="table-scroll">
         <table class="season evo">
           <thead><tr><th class="nb">#</th><th>Club</th>${evoHead}</tr></thead>
           <tbody>${evoRows}</tbody>
         </table>
       </div>
-    </div>
+    </div>` : ''}
 
     ${mine ? (() => {
       const t = s.table.find(x => x.name === mine);
+      if(!t) return '';
       return `
       <div class="panel">
         <h3><span class="num">D</span> ${escapeHtml(t.name)} — trajectoire</h3>
         <div class="kpis">
           <div class="kpi"><span class="k-label">Rang provisoire</span><span class="k-val">${t.rank}<small> / ${s.table.length}</small></span></div>
           <div class="kpi"><span class="k-label">Gains acquis</span><span class="k-val mono">${formatEUR(t.earned)}</span></div>
-          <div class="kpi"><span class="k-label">Ranking bonus projeté</span><span class="k-val mono">${formatEUR(t.rankingBonus + t.placementBonus)}</span></div>
-          <div class="kpi"><span class="k-label">Projection fin de phase</span><span class="k-val mono">${formatEUR(t.projected)}</span></div>
+          <div class="kpi"><span class="k-label">${s.ligueTerminee ? 'Dont ranking bonus' : 'Ranking bonus projeté'}</span><span class="k-val mono">${formatEUR(t.rankingBonus + t.placementBonus)}</span></div>
+          <div class="kpi"><span class="k-label">${projLabel}</span><span class="k-val mono">${formatEUR(t.projected)}</span></div>
         </div>
-        ${evolutionChart(t, s)}
+        ${evolutionChart(t)}
         <div class="md-log">
+          ${t.qualif ? t.qualif.lignes.map(l => `
+            <div class="md-line avant">
+              <span class="md-tag">Qual.</span>
+              <span class="md-txt">${escapeHtml(l.label)}</span>
+              <span class="md-amt">+ ${formatEUR(l.montant)}</span>
+            </div>`).join('') : ''}
+          ${t.supercoupe ? `
+            <div class="md-line avant">
+              <span class="md-tag">S.C.</span>
+              <span class="md-txt">Supercoupe d'Europe ${t.supercoupe.vainqueur ? 'remportée' : 'perdue'} ${t.supercoupe.score} contre ${escapeHtml(t.supercoupe.adversaire)}</span>
+              <span class="md-amt">+ ${formatEUR(t.supercoupe.montant)}</span>
+            </div>` : ''}
+          ${t.qualif || t.supercoupe ? `
+            <div class="md-line socle">
+              <span class="md-tag">J0</span>
+              <span class="md-txt">Starting fee ${comp}</span>
+              <span class="md-amt">+ ${formatEUR(s.start)}</span>
+              <span class="md-cum">${formatEUR(t.base)}</span>
+            </div>` : ''}
           ${s.mds.map(md => {
             const e = t.byMd[md];
             if(!e) return `<div class="md-line"><span class="md-tag">J${md}</span> <span class="md-txt">non disputée</span></div>`;
@@ -1568,6 +2171,12 @@ function renderSeasonView(main){
               <span class="md-cum">${formatEUR(t.cum[md])}</span>
             </div>`;
           }).join('')}
+          ${(t.ko || []).map(k => `
+            <div class="md-line ko">
+              <span class="md-tag">${escapeHtml(KO_SHORT[k.cle] || '★')}</span>
+              <span class="md-txt">${escapeHtml(k.nom)}</span>
+              <span class="md-amt">+ ${formatEUR(k.montant)}</span>
+            </div>`).join('')}
         </div>
         <button class="btn ghost small" onclick="setView('clubs'); syncClubFromSeason();">
           Reporter ces résultats sur la fiche de ${escapeHtml(club.name)}
@@ -1575,27 +2184,20 @@ function renderSeasonView(main){
       </div>`;
     })() : (club ? `
       <div class="panel">
-        <p class="hint" style="margin:0;">« ${escapeHtml(club.name)} » ne figure pas dans les résultats enregistrés de cette compétition.</p>
+        <p class="hint" style="margin:0;">« ${escapeHtml(club.name)} » ne figure pas dans cette compétition.</p>
       </div>` : '')}
     ` : ''}
 
     <div class="panel">
-      <h3><span class="num">↓</span> Ajouter ou corriger une journée</h3>
-      <p class="hint">Déclarez la compétition et la journée, puis collez les scores. Une journée déjà enregistrée est remplacée.</p>
+      <h3><span class="num">↓</span> Saisir une journée à la main</h3>
+      <p class="hint">Utile hors ligne ou avant la mise à jour automatique. Une journée déjà connue est remplacée, et les résultats officiels reprennent la main dès qu'ils arrivent.</p>
       <textarea id="md-text" placeholder="UCL MD2&#10;Arsenal 2-1 Real Madrid&#10;..."></textarea>
       <div class="import-actions">
         <button class="btn" onclick="importMatchday()">Enregistrer la journée</button>
-        <button class="btn ghost small" onclick="restoreOfficialResults()">Restaurer les résultats officiels</button>
+        <button class="btn ghost small" onclick="refreshLive()">Recharger depuis UEFA.com</button>
+        <button class="btn ghost small" onclick="restoreOfficialResults()">Revenir aux résultats embarqués</button>
         <span class="import-status" id="md-status"></span>
       </div>
-      <div class="import-example">UCL MD2
-Arsenal 2-1 Real Madrid
-Bayern Munich 0-0 Liverpool
-
-UEL J1
-Roma 3-1 Fenerbahçe
-
-Format CSV équivalent : UCL,2,Arsenal,2,1,Real Madrid</div>
       ${savedMds.length ? `
       <div class="subhead">Journées enregistrées</div>
       <div class="md-chips">
@@ -1605,6 +2207,19 @@ Format CSV équivalent : UCL,2,Arsenal,2,1,Real Madrid</div>
     </div>
   `;
   setMobileTotal(null);
+}
+
+function refreshLive(){
+  const comp = DB.seasonComp || 'UCL';
+  delete LIVE[comp];
+  LIVE_STATE[comp] = null;
+  setStatus('md-status', 'Chargement des données UEFA.com…');
+  loadLive(comp).then(p => {
+    setStatus('md-status', p
+      ? 'Données UEFA.com relevées le ' + liveUpdatedLabel(comp) + '.'
+      : 'UEFA.com injoignable. Les résultats enregistrés restent affichés.', !p);
+    render();
+  });
 }
 
 /* ============================= RENDER ============================= */
@@ -1634,6 +2249,8 @@ function renderClubList(){
 function renderMain(){
   const main = document.getElementById('main-content');
   if(DB.view === 'season'){ renderSeasonView(main); return; }
+  if(DB.view === 'matches'){ renderMatchesView(main); return; }
+  if(DB.view === 'table'){ renderTableView(main); return; }
   const club = currentClub();
   if(!club){
     main.innerHTML = `
@@ -1891,6 +2508,9 @@ function attachImportHandlers(){
   initCompact();
   await loadAll();
   render();
+  // Les résultats officiels arrivent ensuite et redessinent la vue.
+  const [sc, p] = await Promise.all([loadSupercoupe(), loadLive(DB.seasonComp || 'UCL')]);
+  if(sc || p) render();
 })();
 </script>
 <script>

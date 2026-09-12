@@ -1,0 +1,42 @@
+name: Mise à jour des données UEFA
+
+on:
+  schedule:
+    # Toutes les deux heures, et toutes les vingt minutes pendant les soirées
+    # de match, du mardi au jeudi entre 19h et 23h UTC.
+    - cron: '25 */2 * * *'
+    - cron: '*/20 19-23 * * 2,3,4'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: maj-donnees
+  cancel-in-progress: false
+
+jobs:
+  majcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Récupérer les matchs et classements
+        run: python3 fetch_uefa.py
+
+      - name: Publier si les données ont changé
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain data)" ]; then
+            git add data
+            git commit -m "Données UEFA au $(date -u +'%d/%m/%Y %H:%M UTC')"
+            git push
+            echo "Données mises à jour."
+          else
+            echo "Aucun changement."
+          fi

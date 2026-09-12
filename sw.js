@@ -1,5 +1,5 @@
 /* Service worker : rend l'application utilisable hors ligne. */
-const VERSION = 'a169233457';
+const VERSION = '23845eccc6';
 const CACHE = 'prize-money-' + VERSION;
 const SHELL = [
   './',
@@ -37,6 +37,14 @@ self.addEventListener('fetch', event => {
   const req = event.request;
   if(req.method !== 'GET') return;
   const url = new URL(req.url);
+
+  // Résultats UEFA : réseau d'abord pour rester à jour, cache en secours hors ligne.
+  if(url.origin === location.origin && url.pathname.indexOf('/data/') >= 0){
+    event.respondWith(
+      fetch(req).then(r => putInCache(req, r)).catch(() => caches.match(req))
+    );
+    return;
+  }
 
   // La page : réseau d'abord pour récupérer une mise à jour, cache en secours.
   if(req.mode === 'navigate' || url.pathname.endsWith('/index.html')){
