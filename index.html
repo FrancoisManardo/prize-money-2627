@@ -39,6 +39,14 @@
     --red:#8C2A2A;
     --ok:#0E6B45;
     --shadow:0 1px 0 rgba(11,28,61,0.06);
+    /* Rôles plutôt que teintes : le thème nuit ne redéfinit que ces valeurs. */
+    --card:#ffffff;
+    --accent:#0B1C3D;
+    --accent-fg:#ffffff;
+    --bar-bg:#0B1C3D;
+    --bar-fg:#F5F2EA;
+    --surligne:rgba(169,126,30,0.11);
+    --grille:rgba(11,28,61,0.12);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -137,7 +145,7 @@
   }
   .club-item:hover{ background:var(--paper-2); }
   .club-item.active{
-    background:var(--navy); color:var(--paper); border-color:var(--navy);
+    background:var(--accent); color:var(--accent-fg); border-color:var(--accent);
   }
   .club-item .del{
     opacity:0; background:none; border:none; color:inherit; cursor:pointer; font-size:13px; padding:0 2px;
@@ -149,7 +157,7 @@
 
   /* ---------- Panels ---------- */
   .panel{
-    background:#fff; border:1px solid var(--hairline); border-radius:4px;
+    background:var(--card); border:1px solid var(--hairline); border-radius:4px;
     padding:20px 22px; margin-bottom:18px; box-shadow:var(--shadow);
   }
   .panel h3{
@@ -167,7 +175,8 @@
   .field label{ font-size:11.5px; color:var(--steel); text-transform:uppercase; letter-spacing:0.04em; }
   select, input[type=text], input[type=number], textarea{
     font-family:'IBM Plex Sans', sans-serif; font-size:13.5px; color:var(--navy);
-    padding:8px 9px; border:1px solid var(--hairline-strong); border-radius:3px; background:#fff;
+    padding:8px 9px; border:1px solid var(--hairline-strong); border-radius:3px;
+    background:var(--card); color:var(--navy);
   }
   select:focus, input:focus, textarea:focus, button:focus{ outline:2px solid var(--gold); outline-offset:1px; }
   input[type=number]{ width:90px; }
@@ -187,13 +196,13 @@
   .match-row select{ width:130px; }
   .btn{
     font-family:'IBM Plex Sans', sans-serif; font-size:12.5px; font-weight:600;
-    padding:7px 12px; border-radius:3px; border:1px solid var(--navy); background:var(--navy); color:#fff;
+    padding:7px 12px; border-radius:3px; border:1px solid var(--accent); background:var(--accent); color:var(--accent-fg);
     cursor:pointer;
   }
-  .btn:hover{ background:var(--navy-2); }
-  .btn.ghost{ background:#fff; color:var(--navy); }
-  .btn.ghost:hover{ background:var(--paper-2); }
-  .btn.danger{ border-color:var(--red); color:var(--red); background:#fff; }
+  .btn:hover{ filter:brightness(1.12); }
+  .btn.ghost{ background:var(--card); color:var(--navy); border-color:var(--hairline-strong); }
+  .btn.ghost:hover{ background:var(--paper-2); filter:none; }
+  .btn.danger{ border-color:var(--red); color:var(--red); background:var(--card); }
   .btn.danger:hover{ background:#faf0f0; }
   .btn.small{ padding:4px 9px; font-size:11.5px; }
   .icon-btn{
@@ -270,7 +279,7 @@
   .md-pills{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:14px; }
   .md-pill{
     font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--steel);
-    background:#fff; border:1px solid var(--hairline); border-radius:3px;
+    background:var(--card); border:1px solid var(--hairline); border-radius:3px;
     padding:5px 9px; cursor:pointer; min-width:36px;
   }
   .md-pill:hover{ background:var(--paper-2); }
@@ -286,7 +295,7 @@
   .md-line.avant .md-tag{ border-style:dashed; }
   .md-line.avant .md-txt{ color:var(--steel); }
   .md-line.socle{ border-bottom:1px solid var(--hairline-strong); }
-  .md-pill.active{ background:var(--navy); border-color:var(--navy); color:var(--paper); font-weight:600; }
+  .md-pill.active{ background:var(--accent); border-color:var(--accent); color:var(--accent-fg); font-weight:600; }
 
   /* ---------- Liste de matchs ---------- */
   .date-head{
@@ -303,7 +312,7 @@
   .match-line .ml-team.gagnant{ font-weight:600; }
   .match-line .ml-score{
     font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:13.5px;
-    background:var(--navy); color:var(--paper); border-radius:3px; padding:3px 9px; white-space:nowrap;
+    background:var(--accent); color:var(--accent-fg); border-radius:3px; padding:3px 9px; white-space:nowrap;
   }
   .match-line .ml-score .sep{ opacity:0.55; margin:0 2px; }
   .match-line .ml-heure{
@@ -316,6 +325,95 @@
   .md-line.ko .md-tag{ border-color:var(--gold); color:var(--gold); }
   table.season td.pts{ font-weight:600; color:var(--navy); }
 
+
+
+  /* ================= Thème nuit ================= */
+  /*
+    Bleu profond et bandeau à lignes irisées, dans l'esprit de l'application
+    officielle. Seuls les rôles de couleur changent : la mise en page est la même
+    que pour le thème papier.
+  */
+  body.nuit{
+    color-scheme: dark;
+    --paper:#080B2E;
+    --paper-2:#151C50;
+    --card:#0D1440;
+    --navy:#E8EDFF;
+    --navy-2:#ffffff;
+    --steel:#95A2DA;
+    --hairline:rgba(255,255,255,0.11);
+    --hairline-strong:rgba(255,255,255,0.26);
+    --gold:#F3C455;
+    --gold-soft:rgba(243,196,85,0.55);
+    --ucl:#3A63FF;
+    --uel:#E8752B;
+    --uecl:#1F9E6B;
+    --red:#FF7A7A;
+    --ok:#3DD68C;
+    --accent:#4DD0FF;
+    --accent-fg:#04102E;
+    --bar-bg:#0A1240;
+    --bar-fg:#E8EDFF;
+    --surligne:rgba(77,208,255,0.15);
+    --grille:rgba(255,255,255,0.14);
+    --shadow:0 1px 0 rgba(0,0,0,0.35);
+    background:
+      radial-gradient(900px 520px at 85% -8%, rgba(58,99,255,0.22), transparent 62%),
+      radial-gradient(760px 460px at -5% 12%, rgba(77,208,255,0.10), transparent 60%),
+      var(--paper);
+  }
+  body.nuit ::selection{ background:rgba(77,208,255,0.35); }
+
+  /* Bandeau : lignes irisées, voile sombre pour garder le texte lisible. */
+  body.nuit .letterhead{
+    position:relative;
+    background:
+      url('assets/header-lines.svg') center/cover no-repeat,
+      linear-gradient(135deg, #1616c8 0%, #1b1bd8 55%, #0f0f9c 100%);
+    border-bottom:1px solid rgba(255,255,255,0.22);
+  }
+  body.nuit .letterhead::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(180deg, rgba(4,8,40,0.30) 0%, rgba(4,8,40,0.62) 62%, rgba(8,11,46,0.96) 100%);
+  }
+  body.nuit .letterhead > *{ position:relative; z-index:1; }
+  body.nuit .lh-title h1{ color:#fff; }
+  body.nuit .lh-title .ref{ color:rgba(255,255,255,0.72); }
+  body.nuit .lh-title .sub{ color:rgba(255,255,255,0.80); }
+  body.nuit .lh-right{ color:rgba(255,255,255,0.72); }
+  body.nuit .lh-right strong{ color:#fff !important; }
+  body.nuit .lh-right .tag{ color:#fff; border-color:rgba(255,255,255,0.45); }
+  body.nuit .seal{ border-color:rgba(255,255,255,0.5); }
+  body.nuit .letterhead .btn.ghost{
+    background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.45);
+  }
+
+  /* Onglets : soulignement cyan de l'onglet actif. */
+  body.nuit .tab{ color:var(--steel); }
+  body.nuit .tab.active{ color:#fff; border-bottom-color:var(--accent); }
+  body.nuit .tabs{ border-bottom-color:rgba(255,255,255,0.14); }
+
+  body.nuit .panel{ box-shadow:0 1px 2px rgba(0,0,0,0.30); }
+  body.nuit .club-item:hover{ background:var(--paper-2); }
+  body.nuit .md-pill:hover, body.nuit .chip:hover{ background:var(--paper-2); }
+  body.nuit .btn.danger:hover{ background:rgba(255,122,122,0.14); }
+  body.nuit .import-example{ background:rgba(255,255,255,0.05); }
+  body.nuit .vp-box{ background:rgba(255,255,255,0.05); }
+  body.nuit .match-line{ background:transparent; }
+  body.nuit .kpi{ background:rgba(255,255,255,0.05); }
+  body.nuit .club-logo{
+    background:rgba(255,255,255,0.92); border-radius:50%; padding:1px;
+  }
+  body.nuit .mobile-total{ border-top:1px solid var(--accent); }
+  body.nuit .evo-area{ fill:rgba(77,208,255,0.16); }
+  body.nuit .evo-line{ stroke:var(--accent); }
+  body.nuit .evo-dot{ fill:var(--paper); stroke:var(--accent); }
+  body.nuit footer.disclaimer strong{ color:#fff; }
+  body.nuit .comp-tag{ color:#fff; }
+
+  @media (max-width: 700px){
+    body.nuit .match-line{ background:rgba(255,255,255,0.04); border-color:var(--hairline); }
+  }
 
   /* ---------- Logos de clubs ---------- */
   .club-logo{
@@ -362,11 +460,11 @@
   .chip{
     display:inline-flex; align-items:center; gap:7px;
     font-family:'IBM Plex Sans', sans-serif; font-size:12.5px; color:var(--navy);
-    background:#fff; border:1px solid var(--hairline-strong); border-radius:999px;
+    background:var(--card); border:1px solid var(--hairline-strong); border-radius:999px;
     padding:6px 12px 6px 7px; cursor:pointer;
   }
   .chip:hover{ background:var(--paper-2); }
-  .chip.active{ border-color:var(--navy); box-shadow:inset 0 0 0 1px var(--navy); font-weight:600; }
+  .chip.active{ border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); font-weight:600; }
   .chip-count{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--steel); }
 
   /* ---------- Tableaux de saison ---------- */
@@ -384,7 +482,7 @@
   table.season td.money{ font-size:11.5px; }
   table.season td.proj{ color:var(--gold); }
   table.season td.delta{ color:var(--ok); font-size:11px; }
-  table.season tr.me td{ background:rgba(169,126,30,0.11); font-weight:600; }
+  table.season tr.me td{ background:var(--surligne); font-weight:600; }
   table.season tr.zone-top8 td.rank{ box-shadow:inset 3px 0 0 var(--uecl); }
   table.season tr.zone-po td.rank{ box-shadow:inset 3px 0 0 var(--gold-soft); }
   table.season tr.zone-out td.rank{ box-shadow:inset 3px 0 0 rgba(140,42,42,0.55); }
@@ -412,6 +510,11 @@
   .kpi .k-val.mono{ font-family:'IBM Plex Mono', monospace; font-size:13.5px; }
   .kpi .k-val small{ font-size:11px; color:var(--steel); font-weight:400; }
   .evo-chart{ width:100%; height:auto; display:block; margin-bottom:14px; }
+  .evo-grid{ stroke:var(--grille); }
+  .evo-label{ fill:var(--steel); }
+  .evo-area{ fill:rgba(169,126,30,0.16); }
+  .evo-line{ stroke:var(--gold); }
+  .evo-dot{ fill:var(--card); stroke:var(--gold); }
 
   .md-log{ display:flex; flex-direction:column; gap:2px; margin-bottom:14px; }
   .md-line{
@@ -503,7 +606,9 @@
     .lh-title .ref{ font-size:10.5px; line-height:1.4; }
     .lh-title .sub{ font-size:12px; margin-top:6px; }
     .lh-right{ text-align:left; white-space:normal; padding-top:0; }
-    .lh-actions{ justify-content:flex-start; }
+    .lh-actions{ justify-content:flex-start; gap:7px; }
+    .lh-right .tag{ display:none; }
+    .lh-actions .btn.small{ font-size:12px; padding:7px 11px; }
 
     .layout{
       padding:14px max(14px, env(safe-area-inset-right)) 30px max(14px, env(safe-area-inset-left));
@@ -581,8 +686,8 @@
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       position:fixed; left:0; right:0; bottom:0; z-index:40;
       padding:11px max(14px, env(safe-area-inset-right)) calc(11px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
-      background:var(--navy); color:var(--paper);
-      box-shadow:0 -2px 10px rgba(11,28,61,0.18);
+      background:var(--bar-bg); color:var(--bar-fg);
+      box-shadow:0 -2px 10px rgba(0,0,0,0.25);
     }
     .club-logo{ width:20px; height:20px; }
     .club-logo.big{ width:34px; height:34px; }
@@ -638,7 +743,8 @@
     <strong style="color:var(--navy); font-size:13px;">4,4 Md€</strong>
     <div class="lh-actions">
       <span class="tag">MONTANTS PROVISOIRES</span>
-      <button class="btn ghost small" type="button" id="compact-toggle" aria-pressed="false" onclick="toggleCompact()">Vue compacte</button>
+      <button class="btn ghost small" type="button" id="theme-toggle" aria-pressed="false" onclick="toggleTheme()">Papier</button>
+      <button class="btn ghost small" type="button" id="compact-toggle" aria-pressed="false" onclick="toggleCompact()">Compact</button>
     </div>
   </div>
 </div>
@@ -832,12 +938,38 @@ async function saveAll(){
 /* ---------- Vue compacte (préférence d'affichage, locale) ---------- */
 
 const UI_KEY = 'uefa_pm_ui_v1';
+const THEME_KEY = 'uefa_pm_theme_v1';
+
+function applyTheme(nuit, persist){
+  document.body.classList.toggle('nuit', !!nuit);
+  const btn = document.getElementById('theme-toggle');
+  if(btn){
+    btn.textContent = nuit ? 'Papier' : 'Nuit';
+    btn.setAttribute('aria-pressed', nuit ? 'true' : 'false');
+  }
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content', nuit ? '#080B2E' : '#F5F2EA');
+  if(persist){
+    try{ localStorage.setItem(THEME_KEY, nuit ? 'nuit' : 'papier'); }catch(e){}
+  }
+}
+
+function toggleTheme(){
+  applyTheme(!document.body.classList.contains('nuit'), true);
+}
+
+function initTheme(){
+  let pref = null;
+  try{ pref = localStorage.getItem(THEME_KEY); }catch(e){}
+  // Le thème nuit est celui par défaut.
+  applyTheme(pref === null ? true : pref === 'nuit', false);
+}
 
 function applyCompact(on, persist){
   document.body.classList.toggle('compact', !!on);
   const btn = document.getElementById('compact-toggle');
   if(btn){
-    btn.textContent = on ? 'Vue détaillée' : 'Vue compacte';
+    btn.textContent = on ? 'Détaillé' : 'Compact';
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
   if(persist){
@@ -2136,18 +2268,18 @@ function evolutionChart(team){
   const area = line + ' L' + pts[pts.length-1][0].toFixed(1) + ' ' + (H-padB) + ' L' + pts[0][0].toFixed(1) + ' ' + (H-padB) + ' Z';
   const grid = [0, 0.5, 1].map(f => {
     const v = minV + f * (maxV - minV);
-    return `<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="rgba(11,28,61,0.12)" stroke-width="1"/>
-            <text x="${padL-8}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#5C6470" font-family="IBM Plex Mono, monospace">${moneyShort(v)}€</text>`;
+    return `<line class="evo-grid" x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke-width="1"/>
+            <text class="evo-label" x="${padL-8}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="10" font-family="IBM Plex Mono, monospace">${moneyShort(v)}€</text>`;
   }).join('');
   const pas = Math.ceil(steps.length / 12);
   return `
     <svg class="evo-chart" viewBox="0 0 ${W} ${H}" role="img"
          aria-label="Gains cumulés de ${escapeHtml(team.name)}">
       ${grid}
-      <path d="${area}" fill="rgba(169,126,30,0.14)"/>
-      <path d="${line}" fill="none" stroke="#A97E1E" stroke-width="2" stroke-linejoin="round"/>
-      ${pts.map((p, i) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="#fff" stroke="#A97E1E" stroke-width="2"/>
-        ${i % pas === 0 || i === pts.length-1 ? `<text x="${p[0].toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="10" fill="#5C6470" font-family="IBM Plex Mono, monospace">${steps[i].lab}</text>` : ''}`).join('')}
+      <path class="evo-area" d="${area}"/>
+      <path class="evo-line" d="${line}" fill="none" stroke-width="2" stroke-linejoin="round"/>
+      ${pts.map((p, i) => `<circle class="evo-dot" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" stroke-width="2"/>
+        ${i % pas === 0 || i === pts.length-1 ? `<text class="evo-label" x="${p[0].toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="10" font-family="IBM Plex Mono, monospace">${steps[i].lab}</text>` : ''}`).join('')}
     </svg>`;
 }
 
@@ -2637,6 +2769,7 @@ function attachImportHandlers(){
 /* ============================= INIT ============================= */
 
 (async function init(){
+  initTheme();
   initCompact();
   await loadAll();
   render();

@@ -85,6 +85,18 @@ l'application suffit à récupérer la nouvelle version.
 Le calculateur `~/Desktop/uefa-prize-money-2026-27.html` reste la source unique.
 Toute modification se fait là-bas, puis `python3 build.py` la reporte ici.
 
+## Thèmes
+
+L'application s'ouvre en thème nuit : bleu profond, bandeau à lignes irisées,
+accents cyan, dans l'esprit de l'application officielle. Le bouton « Papier »
+du bandeau revient à la présentation claire d'origine, et le choix est retenu
+d'une ouverture à l'autre.
+
+Le bandeau est dessiné dans `assets/header-lines.svg`. Pour le régénérer ou en
+changer les couleurs, le script qui l'a produit se trouve dans l'historique de
+la conversation ; le fichier peut aussi être remplacé par n'importe quelle
+image, le dégradé bleu servant de repli si le fichier manque.
+
 ## Logos de clubs
 
 Les 108 clubs engagés ont leur écusson, repris du dossier de logos et

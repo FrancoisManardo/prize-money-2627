@@ -1,5 +1,5 @@
 /* Service worker : rend l'application utilisable hors ligne. */
-const VERSION = 'ef42f7a0a3';
+const VERSION = 'a61549d4ee';
 const CACHE = 'prize-money-' + VERSION;
 const SHELL = [
   './',
@@ -13,7 +13,8 @@ const SHELL = [
   './data/ucl.json',
   './data/uel.json',
   './data/uecl.json',
-  './data/supercoupe.json'
+  './data/supercoupe.json',
+  './assets/header-lines.svg'
 ];
 
 self.addEventListener('install', event => {
