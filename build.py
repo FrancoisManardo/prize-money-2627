@@ -12,6 +12,7 @@ calculateur, puis remettez le dossier en ligne.
 """
 import hashlib
 import io
+import re
 import os
 import sys
 
@@ -60,9 +61,12 @@ def main():
     html = html.replace('</body>', FOOT + '\n</body>')
     io.open(TARGET, 'w', encoding='utf-8').write(html)
 
-    build = hashlib.sha1(html.encode('utf-8')).hexdigest()[:10]
     sw_path = os.path.join(HERE, 'sw.js')
     sw = io.open(sw_path, encoding='utf-8').read()
+    # La version du cache dépend de la page et du service worker lui-même, sa
+    # propre ligne de version exclue pour ne pas boucler.
+    empreinte = html + re.sub(r"const VERSION = '[^']*'", '', sw)
+    build = hashlib.sha1(empreinte.encode('utf-8')).hexdigest()[:10]
     start = sw.index("const VERSION = '") + len("const VERSION = '")
     end = sw.index("'", start)
     sw = sw[:start] + build + sw[end:]
