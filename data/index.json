@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-15T11:47:21Z",
+ "maj": "2026-10-15T17:12:25Z",
  "competitions": [
   {
    "comp": "UCL",
@@ -15,7 +15,7 @@
    "matchsJoues": 18,
    "toursFinale": 0,
    "classement": 36,
-   "octets": 64016
+   "octets": 64095
   },
   {
    "comp": "UECL",
@@ -23,7 +23,7 @@
    "matchsJoues": 0,
    "toursFinale": 0,
    "classement": 36,
-   "octets": 101739
+   "octets": 101865
   }
  ]
 }
