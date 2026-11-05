@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-05T16:35:44Z",
+ "maj": "2026-11-05T23:44:38Z",
  "competitions": [
   {
    "comp": "UCL",
@@ -12,18 +12,18 @@
   {
    "comp": "UEL",
    "journees": 8,
-   "matchsJoues": 55,
+   "matchsJoues": 72,
    "toursFinale": 0,
    "classement": 36,
-   "octets": 65144
+   "octets": 65701
   },
   {
    "comp": "UECL",
    "journees": 6,
-   "matchsJoues": 36,
+   "matchsJoues": 54,
    "toursFinale": 0,
    "classement": 36,
-   "octets": 102810
+   "octets": 103331
   }
  ]
 }
